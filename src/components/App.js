@@ -2,13 +2,12 @@ const { h, Component } = require("preact");
 
 const Joyplot = require("./Joyplot");
 const styles = require("./App.scss");
-const worm = require("./worm.svg");
 
 class App extends Component {
-  render({ projectName }) {
+  render() {
     return (
       <div className={styles.root}>
-        <Joyplot name="Joshua" />
+        <Joyplot dataUrl="data.csv" />
       </div>
     );
   }
