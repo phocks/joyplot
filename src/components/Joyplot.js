@@ -5,17 +5,21 @@ import * as d3 from "d3";
 class Joyplot extends Component {
   constructor(props) {
     super(props);
-    this.createChart = this.createChart.bind(this);
+    // this.createChart = this.createChart.bind(this);
   }
 
   componentDidMount() {
     this.createChart();
   }
 
+  componentDidUpdate() {}
+
   createChart() {
+    console.log(this.props);
     d3.select("svg");
   }
-  render({}) {
+  render(props, state) {
+    console.log(props.name);
     return (
       <div className={styles.root}>
         <svg />
