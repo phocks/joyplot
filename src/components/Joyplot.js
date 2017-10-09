@@ -19,7 +19,7 @@ class Joyplot extends Component {
     this.xScale = d3.scaleTime().range([0, this.state.width]);
     this.yScale = d3.scaleLinear().range([this.state.height, 0]);
 
-    // define the area
+    // define the chart area
     this.area = d3
       .area()
       .x(d => {
@@ -44,19 +44,30 @@ class Joyplot extends Component {
     // console.log(this.parseDate(data[0].Week));
     // console.log(this.state.width);
 
-    console.log(dataFlat);
-    // dataFlat.forEach(d => {
-    //   d.Week = this.parseDate(d["Week"]);
-    //   console.log(d["Week"]);
-    //   // d.close = +d.close;
-    // });
 
-    var data = d3
+    // Parse the dates to use full date format
+    dataFlat.forEach(d => {
+      d.Week = this.parseDate(d["Week"]);
+    });
+
+    // Convert the number strings to integers
+    dataFlat.columns.forEach(d => {
+      dataFlat.forEach(e => {
+        if (d === "Week") return;
+        e[d] = +e[d];
+      });
+    });
+
+    // Use D3 to nest our data week by week
+    var dataNested = d3
       .nest()
       .key(function(d) {
-        return d.activity;
+        return d.Week;
       })
       .entries(dataFlat);
+
+    console.log(dataNested);
+
 
     const svg = d3
       .select("svg")
@@ -66,7 +77,7 @@ class Joyplot extends Component {
 
   loadData() {
     d3
-      .queue(2)
+      .queue(2) // Load 2 files concurrently (if there are more than 1)
       .defer(d3.csv, this.props.dataUrl)
       .await(this.createChart);
   }
@@ -74,7 +85,7 @@ class Joyplot extends Component {
   render(props, state) {
     return (
       <div className={styles.root}>
-        <svg />
+        <svg class={styles.joyplot} />
       </div>
     );
   }
