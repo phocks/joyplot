@@ -5,30 +5,15 @@ import * as d3 from "d3";
 class Joyplot extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       width: 960,
-      height: 500
+      height: 60
     };
     this.createChart = this.createChart.bind(this); // Bind to access within method
   }
   componentWillMount() {
-    // Set up a date parser
-    this.parseDate = d3.timeParse("%d/%m/%Y");
-
-    // set the range scales
-    this.xScale = d3.scaleTime().range([0, this.state.width]);
-    this.yScale = d3.scaleLinear().range([this.state.height, 0]);
-
-    // define the chart area
-    this.area = d3
-      .area()
-      .x(d => {
-        return x(d.date);
-      })
-      .y0(this.state.height)
-      .y1(d => {
-        return y(d.close);
-      });
+    
   }
 
   componentDidMount() {
@@ -40,14 +25,27 @@ class Joyplot extends Component {
   }
 
   createChart(error, dataFlat) {
-    // console.log(data[0].Week);
-    // console.log(this.parseDate(data[0].Week));
-    // console.log(this.state.width);
+    // Set up a date parser
+    var parseDate = d3.timeParse("%d/%m/%Y");
 
+    // set the range scales
+    var xScale = d3.scaleTime().range([0, this.state.width]);
+    var yScale = d3.scaleLinear().range([this.state.height, 0]);
+
+    // define the chart area
+    var area = d3
+      .area()
+      .x(d => {
+        return xScale(d.Week);
+      })
+      .y1(d => {
+        return yScale(d["Ankara bombing"]);
+      })
+      .curve(d3.curveBasis);
 
     // Parse the dates to use full date format
     dataFlat.forEach(d => {
-      d.Week = this.parseDate(d["Week"]);
+      d.Week = parseDate(d["Week"]);
     });
 
     // Convert the number strings to integers
@@ -58,21 +56,34 @@ class Joyplot extends Component {
       });
     });
 
-    // Use D3 to nest our data week by week
-    var dataNested = d3
-      .nest()
-      .key(function(d) {
-        return d.Week;
-      })
-      .entries(dataFlat);
-
-    console.log(dataNested);
-
-
-    const svg = d3
+    // Draw the chart
+    var svg = d3
       .select("svg")
       .attr("width", this.state.width)
       .attr("height", this.state.height);
+
+    var g = svg.append("g");
+
+    xScale.domain(
+      d3.extent(dataFlat, function(d) {
+        return d.Week;
+      })
+    );
+
+    yScale.domain([
+      0,
+      d3.max(dataFlat, function(d) {
+        return d["Sydney siege"];
+      })
+    ]);
+
+    area.y0(yScale(0));
+
+    g
+      .append("path")
+      .datum(dataFlat)
+      .attr("fill", "steelblue")
+      .attr("d", area);
   }
 
   loadData() {
