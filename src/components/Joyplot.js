@@ -12,9 +12,7 @@ class Joyplot extends Component {
     };
     this.createChart = this.createChart.bind(this); // Bind to access within method
   }
-  componentWillMount() {
-    
-  }
+  componentWillMount() {}
 
   componentDidMount() {
     this.loadData();
@@ -32,14 +30,17 @@ class Joyplot extends Component {
     var xScale = d3.scaleTime().range([0, this.state.width]);
     var yScale = d3.scaleLinear().range([this.state.height, 0]);
 
+    console.log(dataFlat);
+    var searchTerm = "Ankara bombing";
+
     // define the chart area
-    var area = d3
+    let area = d3
       .area()
       .x(d => {
         return xScale(d.Week);
       })
       .y1(d => {
-        return yScale(d["Ankara bombing"]);
+        return yScale(d[searchTerm]);
       })
       .curve(d3.curveBasis);
 
@@ -79,11 +80,19 @@ class Joyplot extends Component {
 
     area.y0(yScale(0));
 
-    g
-      .append("path")
-      .datum(dataFlat)
-      .attr("fill", "steelblue")
-      .attr("d", area);
+    dataFlat.columns.forEach(s => {
+      if (s === "Week") return;
+      
+      area.y1(d => {
+        return yScale(d[s]);
+      });
+
+      g
+        .append("path")
+        .datum(dataFlat)
+        .attr("fill", "steelblue")
+        .attr("d", area);
+    });
   }
 
   loadData() {
