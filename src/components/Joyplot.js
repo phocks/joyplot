@@ -26,7 +26,7 @@ class Joyplot extends Component {
     // Inital variables
     var joyplotHeight = 100;
     var joyplotWidth = 960;
-    var spacing = 18;
+    var spacing = 16;
 
     // Set up a date parser
     var parseDate = d3.timeParse("%d/%m/%Y");
@@ -109,10 +109,10 @@ class Joyplot extends Component {
       });
 
 
-      const plot = g
+      g
         .append("path")
         .datum(dataFlat)
-        .attr("fill", "rgba(0, 0, 0, 1")
+        .attr("fill", "rgba(0, 0, 0, 1)")
         .attr("transform", "translate(0, " + spacing * i + ")")
         .attr("d", area);
 
@@ -120,7 +120,7 @@ class Joyplot extends Component {
         .append("path")
         .datum(dataFlat)
         .style("fill", "none")
-        .style("stroke", "rgba(255, 255, 255, 0.9")
+        .style("stroke", "rgba(255, 255, 255, 1)")
         .style("stroke-width", 1.4)
         .attr("transform", "translate(0, " + spacing * i + ")")
         .attr("d", line);
