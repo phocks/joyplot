@@ -8,7 +8,7 @@ class Joyplot extends Component {
 
     this.state = {
       width: 960,
-      height: 500
+      height: 800
     };
     this.createChart = this.createChart.bind(this); // Bind to access within method
   }
@@ -24,9 +24,9 @@ class Joyplot extends Component {
 
   createChart(error, dataFlat) {
     // Inital variables
-    var joyplotHeight = 50;
-    var joyplotWidth = 600;
-    var spacing = 13;
+    var joyplotHeight = 100;
+    var joyplotWidth = 960;
+    var spacing = 18;
 
     // Set up a date parser
     var parseDate = d3.timeParse("%d/%m/%Y");
@@ -36,6 +36,7 @@ class Joyplot extends Component {
     var yScale = d3.scaleLinear().range([joyplotHeight, 0]);
 
     console.log(dataFlat);
+
     var searchTerm = "Ankara bombing";
 
     // define the chart area
@@ -52,10 +53,10 @@ class Joyplot extends Component {
 
     var line = d3
       .line()
-      .x((d) => {
+      .x(d => {
         return xScale(d.Week);
       })
-      .y((d) => {
+      .y(d => {
         return yScale(d[searchTerm]);
       })
       .curve(d3.curveBasis);
@@ -105,7 +106,8 @@ class Joyplot extends Component {
 
       line.y(d => {
         return yScale(d[volume]);
-      })
+      });
+
 
       const plot = g
         .append("path")
@@ -119,7 +121,7 @@ class Joyplot extends Component {
         .datum(dataFlat)
         .style("fill", "none")
         .style("stroke", "rgba(255, 255, 255, 0.9")
-        .style('stroke-width', 1.4)
+        .style("stroke-width", 1.4)
         .attr("transform", "translate(0, " + spacing * i + ")")
         .attr("d", line);
     });
