@@ -1,14 +1,13 @@
-const { h, Component } = require('preact');
+const { h, Component } = require("preact");
 
-const Joyplot = require('./Joyplot');
-const styles = require('./App.scss');
-const worm = require('./worm.svg');
+const Joyplot = require("./Joyplot");
+const styles = require("./App.scss");
 
 class App extends Component {
-  render({ projectName }) {
+  render() {
     return (
       <div className={styles.root}>
-        <Joyplot></Joyplot>
+        <Joyplot dataUrl="data.csv" />
       </div>
     );
   }
