@@ -8,7 +8,7 @@ class Joyplot extends Component {
 
     this.state = {
       width: 960,
-      height: 60
+      height: 500
     };
     this.createChart = this.createChart.bind(this); // Bind to access within method
   }
@@ -23,12 +23,17 @@ class Joyplot extends Component {
   }
 
   createChart(error, dataFlat) {
+    // Inital variables
+    var joyplotHeight = 50;
+    var joyplotWidth = 600;
+    var spacing = 13;
+
     // Set up a date parser
     var parseDate = d3.timeParse("%d/%m/%Y");
 
     // set the range scales
-    var xScale = d3.scaleTime().range([0, this.state.width]);
-    var yScale = d3.scaleLinear().range([this.state.height, 0]);
+    var xScale = d3.scaleTime().range([0, joyplotWidth]);
+    var yScale = d3.scaleLinear().range([joyplotHeight, 0]);
 
     console.log(dataFlat);
     var searchTerm = "Ankara bombing";
@@ -42,7 +47,20 @@ class Joyplot extends Component {
       .y1(d => {
         return yScale(d[searchTerm]);
       })
+      .y0(yScale(0))
       .curve(d3.curveBasis);
+
+    var line = d3
+      .line()
+      .x((d) => {
+        return xScale(d.Week);
+      })
+      .y((d) => {
+        return yScale(d[searchTerm]);
+      })
+      .curve(d3.curveBasis);
+
+    // var line = area();
 
     // Parse the dates to use full date format
     dataFlat.forEach(d => {
@@ -78,20 +96,32 @@ class Joyplot extends Component {
       })
     ]);
 
-    area.y0(yScale(0));
+    dataFlat.columns.forEach((volume, i) => {
+      if (volume === "Week") return;
 
-    dataFlat.columns.forEach(s => {
-      if (s === "Week") return;
-      
       area.y1(d => {
-        return yScale(d[s]);
+        return yScale(d[volume]);
       });
+
+      line.y(d => {
+        return yScale(d[volume]);
+      })
+
+      const plot = g
+        .append("path")
+        .datum(dataFlat)
+        .attr("fill", "rgba(0, 0, 0, 1")
+        .attr("transform", "translate(0, " + spacing * i + ")")
+        .attr("d", area);
 
       g
         .append("path")
         .datum(dataFlat)
-        .attr("fill", "steelblue")
-        .attr("d", area);
+        .style("fill", "none")
+        .style("stroke", "rgba(255, 255, 255, 0.9")
+        .style('stroke-width', 1.4)
+        .attr("transform", "translate(0, " + spacing * i + ")")
+        .attr("d", line);
     });
   }
 
