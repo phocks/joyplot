@@ -61,8 +61,6 @@ class Joyplot extends Component {
       })
       .curve(d3.curveBasis);
 
-    // var line = area();
-
     // Parse the dates to use full date format
     dataFlat.forEach(d => {
       d.Week = parseDate(d["Week"]);
@@ -107,7 +105,6 @@ class Joyplot extends Component {
       line.y(d => {
         return yScale(d[volume]);
       });
-
 
       g
         .append("path")
