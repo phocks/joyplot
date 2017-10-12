@@ -22,10 +22,10 @@ class Joyplot extends Component {
     this.loadData();
   }
 
-  createChart(error, dataFlat) {
+  createChart(error, dataFlat, cp1919) {
     // Inital variables
     var joyplotHeight = 100;
-    var joyplotWidth = 960;
+    var joyplotWidth = 700;
     var spacing = 16;
 
     // Set up a date parser
@@ -109,7 +109,7 @@ class Joyplot extends Component {
       g
         .append("path")
         .datum(dataFlat)
-        .attr("fill", "rgba(0, 0, 0, 1)")
+        .attr("fill", '#C70039')
         .attr("transform", "translate(0, " + spacing * i + ")")
         .attr("d", area);
 
@@ -117,7 +117,7 @@ class Joyplot extends Component {
         .append("path")
         .datum(dataFlat)
         .style("fill", "none")
-        .style("stroke", "rgba(255, 255, 255, 1)")
+        .style("stroke", "#900C3F")
         .style("stroke-width", 1.4)
         .attr("transform", "translate(0, " + spacing * i + ")")
         .attr("d", line);
