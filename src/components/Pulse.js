@@ -1,8 +1,8 @@
 import { h, Component } from "preact";
-import * as styles from "./Joyplot.scss";
+import * as styles from "./Pulse.scss";
 import * as d3 from "d3";
 
-class Joyplot extends Component {
+class Pulse extends Component {
   constructor(props) {
     super(props);
 
@@ -25,8 +25,8 @@ class Joyplot extends Component {
   createChart(error, dataFlat, cp1919) {
     // Inital variables
     var joyplotHeight = 100;
-    var joyplotWidth = 960;
-    var spacing = 16;
+    var joyplotWidth = 500;
+    var spacing = 40;
 
     // Set up a date parser
     var parseDate = d3.timeParse("%d/%m/%y");
@@ -35,9 +35,9 @@ class Joyplot extends Component {
     var xScale = d3.scaleTime().range([0, joyplotWidth]);
     var yScale = d3.scaleLinear().range([joyplotHeight, 0]);
 
-    console.log(dataFlat);
+    // console.log(dataFlat);
 
-    // var searchTerm = "Virginia Tech shooting";
+    var searchTerm = "Virginia Tech shooting";
 
     // define the chart area
     let area = d3
@@ -45,21 +45,21 @@ class Joyplot extends Component {
       .x(d => {
         return xScale(d.Week);
       })
-      // .y1(d => {
-      //   return yScale(d[searchTerm]);
-      // })
+      .y1(d => {
+        return yScale(d[searchTerm]);
+      })
       .y0(yScale(0))
-      .curve(d3.curveBasis);
+      .curve(d3.curveMonotoneX);
 
     var line = d3
       .line()
       .x(d => {
         return xScale(d.Week);
       })
-      // .y(d => {
-      //   return yScale(d[searchTerm]);
-      // })
-      .curve(d3.curveBasis);
+      .y(d => {
+        return yScale(d[searchTerm]);
+      })
+      .curve(d3.curveMonotoneX);
 
     // Parse the dates to use full date format
     dataFlat.forEach(d => {
@@ -76,7 +76,7 @@ class Joyplot extends Component {
 
     // Draw the chart
     var svg = d3
-      .select("." + styles.joyplot)
+      .select("." + styles.pulse)
       .attr("width", this.state.width)
       .attr("height", this.state.height);
 
@@ -91,7 +91,7 @@ class Joyplot extends Component {
     yScale.domain([
       0,
       d3.max(dataFlat, function(d) {
-        return d["Sydney siege"];
+        return d["Virginia Tech shooting"];
       })
     ]);
 
@@ -106,10 +106,17 @@ class Joyplot extends Component {
         return yScale(d[volume]);
       });
 
+      let downPage = spacing * i;
+
+      downPage = downPage + 90;
+
+      console.log(downPage);
+
       g
         .append("path")
         .datum(dataFlat)
         .attr("fill", '#C70039')
+        .attr('fill-opacity', 0.6)
         .attr("transform", "translate(0, " + spacing * i + ")")
         .attr("d", area);
 
@@ -121,6 +128,12 @@ class Joyplot extends Component {
         .style("stroke-width", 1.4)
         .attr("transform", "translate(0, " + spacing * i + ")")
         .attr("d", line);
+
+      g.append('text')
+        .text(volume)
+        .style('font-size', "15px")
+        .attr("transform", "translate(0, " + downPage + ")")
+
     });
   }
 
@@ -134,10 +147,10 @@ class Joyplot extends Component {
   render(props, state) {
     return (
       <div className={styles.root}>
-        <svg className={styles.joyplot} />
+        <svg className={styles.pulse} />
       </div>
     );
   }
 }
 
-module.exports = Joyplot;
+module.exports = Pulse;
