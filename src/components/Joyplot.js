@@ -49,7 +49,7 @@ class Joyplot extends Component {
       //   return yScale(d[searchTerm]);
       // })
       .y0(yScale(0))
-      .curve(d3.curveBasis);
+      .curve(d3.curveMonotoneX);
 
     var line = d3
       .line()
@@ -59,7 +59,7 @@ class Joyplot extends Component {
       // .y(d => {
       //   return yScale(d[searchTerm]);
       // })
-      .curve(d3.curveBasis);
+      .curve(d3.curveMonotoneX);
 
     // Parse the dates to use full date format
     dataFlat.forEach(d => {

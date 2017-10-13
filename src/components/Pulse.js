@@ -25,7 +25,7 @@ class Pulse extends Component {
   createChart(error, dataFlat, cp1919) {
     // Inital variables
     var joyplotHeight = 100;
-    var joyplotWidth = 500;
+    var joyplotWidth = 960;
     var spacing = 40;
 
     // Set up a date parser
@@ -108,7 +108,7 @@ class Pulse extends Component {
 
       let downPage = spacing * i;
 
-      downPage = downPage + 90;
+      downPage = downPage + 93;
 
       console.log(downPage);
 
@@ -131,7 +131,9 @@ class Pulse extends Component {
 
       g.append('text')
         .text(volume)
-        .style('font-size', "15px")
+        .style('font-size', "16px")
+        .style('font-family', 'Helvetica, Arial, sans-serif')
+        .style('fill', '#444')
         .attr("transform", "translate(0, " + downPage + ")")
 
     });

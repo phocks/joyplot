@@ -9,7 +9,7 @@ class App extends Component {
   render() {
     return (
       <div className={styles.root}>
-        {/* <Joyplot dataUrl="data.csv" /> */}
+        {<Joyplot dataUrl="data.csv" />}
         <Pulse dataUrl="pulse-data.csv" />
       </div>
     );
