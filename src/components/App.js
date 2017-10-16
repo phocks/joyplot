@@ -9,8 +9,8 @@ class App extends Component {
   render() {
     return (
       <div className={styles.root}>
-        {<Joyplot dataUrl="data.csv" />}
-        <Pulse dataUrl="pulse-data.csv" />
+        {/* {<Joyplot dataUrl="data.csv" />} */}
+        <Pulse dataUrl="pulse-data.csv" dataUrl2="gun-control-data.csv"/>
       </div>
     );
   }

@@ -8,7 +8,7 @@ class Pulse extends Component {
 
     this.state = {
       width: 960,
-      height: 800
+      height: 2000
     };
     this.createChart = this.createChart.bind(this); // Bind to access within method
   }
@@ -22,11 +22,11 @@ class Pulse extends Component {
     this.loadData();
   }
 
-  createChart(error, dataFlat, cp1919) {
+  createChart(error, dataFlat, gunControlData) {
     // Inital variables
-    var joyplotHeight = 100;
+    var joyplotHeight = 130;
     var joyplotWidth = 960;
-    var spacing = 40;
+    var spacing = 100;
 
     // Set up a date parser
     var parseDate = d3.timeParse("%d/%m/%y");
@@ -37,7 +37,7 @@ class Pulse extends Component {
 
     // console.log(dataFlat);
 
-    var searchTerm = "Virginia Tech shooting";
+    var searchTerm = "Virginia tech shooting";
 
     // define the chart area
     let area = d3
@@ -74,6 +74,20 @@ class Pulse extends Component {
       });
     });
 
+    gunControlData.forEach(d => {
+      d.Week = parseDate(d["Week"]);
+    });
+
+    // Convert the number strings to integers
+    gunControlData.columns.forEach(d => {
+      dataFlat.forEach(e => {
+        if (d === "Week") return;
+        e[d] = +e[d];
+      });
+    });
+
+    console.log(gunControlData);
+
     // Draw the chart
     var svg = d3
       .select("." + styles.pulse)
@@ -91,9 +105,11 @@ class Pulse extends Component {
     yScale.domain([
       0,
       d3.max(dataFlat, function(d) {
-        return d["Virginia Tech shooting"];
+        return d["Virginia tech shooting"];
       })
     ]);
+
+    
 
     dataFlat.columns.forEach((volume, i) => {
       if (volume === "Week") return;
@@ -108,16 +124,15 @@ class Pulse extends Component {
 
       let downPage = spacing * i;
 
-      downPage = downPage + 93;
+      let downPageText = downPage + 100;
 
-      console.log(downPage);
 
       g
         .append("path")
         .datum(dataFlat)
         .attr("fill", '#C70039')
         .attr('fill-opacity', 0.6)
-        .attr("transform", "translate(0, " + spacing * i + ")")
+        .attr("transform", "translate(0, " + downPage + ")")
         .attr("d", area);
 
       g
@@ -126,7 +141,7 @@ class Pulse extends Component {
         .style("fill", "none")
         .style("stroke", "#900C3F")
         .style("stroke-width", 1.4)
-        .attr("transform", "translate(0, " + spacing * i + ")")
+        .attr("transform", "translate(0, " + downPage + ")")
         .attr("d", line);
 
       g.append('text')
@@ -134,15 +149,60 @@ class Pulse extends Component {
         .style('font-size', "16px")
         .style('font-family', 'Helvetica, Arial, sans-serif')
         .style('fill', '#444')
-        .attr("transform", "translate(0, " + downPage + ")")
+        .attr("transform", "translate(0, " + downPageText + ")")
 
     });
+
+
+    gunControlData.columns.forEach((volume, i) => {
+      if (volume === "Week") return;
+
+      area.y1(d => {
+        return yScale(d[volume]);
+      });
+
+      line.y(d => {
+        return yScale(d[volume]);
+      });
+
+      let downPage = spacing * i;
+
+      // downPage = downPage + 200;
+
+      g
+        .append("path")
+        .datum(gunControlData)
+        .attr("fill", 'lightblue')
+        .attr('fill-opacity', 0.6)
+        .attr("transform", "translate(0, " + downPage + ")")
+        .attr("d", area);
+
+      g
+        .append("path")
+        .datum(gunControlData)
+        .style("fill", "none")
+        .style("stroke", "blue")
+        .style("stroke-width", 1.4)
+        .attr("transform", "translate(0, " + downPage + ")")
+        .attr("d", line);
+
+      // g.append('text')
+      //   .text(volume)
+      //   .style('font-size', "16px")
+      //   .style('font-family', 'Helvetica, Arial, sans-serif')
+      //   .style('fill', '#444')
+      //   .attr("transform", "translate(0, " + downPage + ")")
+
+    });
+
+    
   }
 
   loadData() {
     d3
       .queue(2) // Load 2 files concurrently (if there are more than 1)
       .defer(d3.csv, this.props.dataUrl)
+      .defer(d3.csv, this.props.dataUrl2)
       .await(this.createChart);
   }
 
