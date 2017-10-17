@@ -25,11 +25,11 @@ class Joyplot extends Component {
   createChart(error, dataFlat, cp1919) {
     // Inital variables
     var joyplotHeight = 100;
-    var joyplotWidth = 960;
-    var spacing = 16;
+    var joyplotWidth = 700;
+    var spacing = 26;
 
     // Set up a date parser
-    var parseDate = d3.timeParse("%d/%m/%y");
+    var parseDate = d3.timeParse("%d/%m/%Y");
 
     // set the range scales
     var xScale = d3.scaleTime().range([0, joyplotWidth]);
@@ -49,7 +49,7 @@ class Joyplot extends Component {
       //   return yScale(d[searchTerm]);
       // })
       .y0(yScale(0))
-      // .curve(d3.curveMonotoneX);
+      .curve(d3.curveMonotoneX);
 
     var line = d3
       .line()
@@ -59,7 +59,7 @@ class Joyplot extends Component {
       // .y(d => {
       //   return yScale(d[searchTerm]);
       // })
-      // .curve(d3.curveMonotoneX);
+      .curve(d3.curveMonotoneX);
 
     // Parse the dates to use full date format
     dataFlat.forEach(d => {
@@ -106,10 +106,13 @@ class Joyplot extends Component {
         return yScale(d[volume]);
       });
 
+      var downPageText = spacing * i + 95;
+
       g
         .append("path")
         .datum(dataFlat)
-        .attr("fill", '#C70039')
+        .attr("fill", "#C70039")
+        .style("fill-opacity", 0.7)
         .attr("transform", "translate(0, " + spacing * i + ")")
         .attr("d", area);
 
@@ -118,9 +121,17 @@ class Joyplot extends Component {
         .datum(dataFlat)
         .style("fill", "none")
         .style("stroke", "#900C3F")
-        .style("stroke-width", 1.4)
+        .style("stroke-width", 0.5)
         .attr("transform", "translate(0, " + spacing * i + ")")
         .attr("d", line);
+
+      g
+        .append("text")
+        .text(volume)
+        .style("font-size", "16px")
+        .style("font-family", "Helvetica, Arial, sans-serif")
+        .style("fill", "#444")
+        .attr("transform", "translate(0, " + downPageText + ")");
     });
   }
 

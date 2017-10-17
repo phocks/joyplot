@@ -11,6 +11,8 @@ function init() {
 
 init();
 
+
+// Magic hot reload stuff
 if (module.hot) {
   module.hot.accept('./components/App', () => {
     try {
