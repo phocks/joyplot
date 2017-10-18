@@ -1,7 +1,7 @@
 {
-  "name": "joyplot",
+  "name": "as-time-goes-by",
   "version": "1.0.0",
-  "description": "A project generated from aunty's preact-app template.",
+  "description": "Charts detailing searches over time",
   "license": "MIT",
   "private": true,
   "contributors": [

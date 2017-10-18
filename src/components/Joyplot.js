@@ -7,8 +7,8 @@ class Joyplot extends Component {
     super(props);
 
     this.state = {
-      width: 960,
-      height: 800
+      width: 700,
+      height: 500
     };
     this.createChart = this.createChart.bind(this); // Bind to access within method
   }
@@ -116,14 +116,14 @@ class Joyplot extends Component {
         .attr("transform", "translate(0, " + spacing * i + ")")
         .attr("d", area);
 
-      g
-        .append("path")
-        .datum(dataFlat)
-        .style("fill", "none")
-        .style("stroke", "#900C3F")
-        .style("stroke-width", 0.5)
-        .attr("transform", "translate(0, " + spacing * i + ")")
-        .attr("d", line);
+      // g
+      //   .append("path")
+      //   .datum(dataFlat)
+      //   .style("fill", "none")
+      //   .style("stroke", "#900C3F")
+      //   .style("stroke-width", 0.5)
+      //   .attr("transform", "translate(0, " + spacing * i + ")")
+      //   .attr("d", line);
 
       g
         .append("text")

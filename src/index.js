@@ -1,16 +1,25 @@
 const { h, render } = require('preact');
 
 const PROJECT_NAME = 'joyplot';
-const root = document.querySelector(`[data-${PROJECT_NAME}-root]`);
+const root = document.querySelector(`[data-joyplot-root]`);
+const elemJoyplot = document.querySelector(`[name=joyplot]`);
+const elemStacked = document.querySelector(`[name=stacked]`);
 
 function init() {
-  const App = require('./components/App');
-
-  render(<App projectName={PROJECT_NAME} />, root, root.firstChild);
+  draw(elemJoyplot, "joyplot");
+  draw(elemStacked, "stacked");
 }
 
-init();
+function draw(element, type) {
+  const App = require('./components/App');
 
+  console.log(type);
+  
+  render(<App type={type} />, element, element.firstChild);
+}
+
+
+init();
 
 // Magic hot reload stuff
 if (module.hot) {

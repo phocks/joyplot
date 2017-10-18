@@ -7,8 +7,8 @@ class Pulse extends Component {
     super(props);
 
     this.state = {
-      width: 960,
-      height: 2000
+      width: 700,
+      height: 1000
     };
     this.createChart = this.createChart.bind(this); // Bind to access within method
   }
@@ -135,14 +135,14 @@ class Pulse extends Component {
         .attr("transform", "translate(0, " + downPage + ")")
         .attr("d", area);
 
-      g
-        .append("path")
-        .datum(dataFlat)
-        .style("fill", "none")
-        .style("stroke", "#900C3F")
-        .style("stroke-width", 1.4)
-        .attr("transform", "translate(0, " + downPage + ")")
-        .attr("d", line);
+      // g
+      //   .append("path")
+      //   .datum(dataFlat)
+      //   .style("fill", "none")
+      //   .style("stroke", "#900C3F")
+      //   .style("stroke-width", 1.4)
+      //   .attr("transform", "translate(0, " + downPage + ")")
+      //   .attr("d", line);
 
       g.append('text')
         .text(volume)
@@ -178,13 +178,13 @@ class Pulse extends Component {
         .attr("d", area);
 
       g
-        .append("path")
-        .datum(gunControlData)
-        .style("fill", "none")
-        .style("stroke", "blue")
-        .style("stroke-width", 1.4)
-        .attr("transform", "translate(0, " + downPage + ")")
-        .attr("d", line);
+        // .append("path")
+        // .datum(gunControlData)
+        // .style("fill", "none")
+        // .style("stroke", "blue")
+        // .style("stroke-width", 1.4)
+        // .attr("transform", "translate(0, " + downPage + ")")
+        // .attr("d", line);
 
       // g.append('text')
       //   .text(volume)
