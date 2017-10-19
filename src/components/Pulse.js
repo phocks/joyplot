@@ -198,11 +198,11 @@ class Pulse extends Component {
     
   }
 
-  loadData() {
+  loadData() { 
     d3
       .queue(2) // Load 2 files concurrently (if there are more than 1)
-      .defer(d3.csv, this.props.dataUrl)
-      .defer(d3.csv, this.props.dataUrl2)
+      .defer(d3.csv, this.props.searches)
+      .defer(d3.csv, this.props.control)
       .await(this.createChart);
   }
 
