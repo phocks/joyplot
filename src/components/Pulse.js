@@ -177,7 +177,7 @@ class Pulse extends Component {
         .attr("transform", "translate(0, " + downPage + ")")
         .attr("d", area);
 
-      g
+      // g
         // .append("path")
         // .datum(gunControlData)
         // .style("fill", "none")
@@ -201,8 +201,8 @@ class Pulse extends Component {
   loadData() { 
     d3
       .queue(2) // Load 2 files concurrently (if there are more than 1)
-      .defer(d3.csv, this.props.searches)
-      .defer(d3.csv, this.props.control)
+      .defer(d3.csv, this.props.dataURL)
+      .defer(d3.csv, this.props.dataURL2)
       .await(this.createChart);
   }
 

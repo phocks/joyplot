@@ -5,6 +5,18 @@ const Pulse = require("./Pulse");
 
 const styles = require("./App.scss");
 
+const interactiveElement = document.querySelector(
+  "[data-as-time-goes-by-root]"
+);
+
+const dataURLs = {
+  joyplot: interactiveElement.dataset.joyplot,
+  pulse: interactiveElement.dataset.pulse,
+  control: interactiveElement.dataset.control
+};
+
+
+
 class App extends Component {
   render() {
     const { type } = this.props;
@@ -12,14 +24,14 @@ class App extends Component {
     switch (type) {
       case "joyplot":
         return (
-          <Joyplot dataUrl="http://www.abc.net.au/res/sites/news-projects/as-time-goes-by/master/data.csv" />
+          <Joyplot dataUrl={dataURLs.joyplot} />
         );
-        break; 
+        break;
       case "stacked":
         return (
           <Pulse
-            searches="http://www.abc.net.au/res/sites/news-projects/as-time-goes-by/master/pulse-data.csv"
-            control="http://www.abc.net.au/res/sites/news-projects/as-time-goes-by/master/gun-control-data.csv"
+            dataURL={dataURLs.pulse}
+            dataURL2={dataURLs.control}
           />
         );
     }
