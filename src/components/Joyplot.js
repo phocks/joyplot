@@ -7,6 +7,7 @@ class Joyplot extends Component {
     super(props);
 
     this.state = {
+      // Not using this any more maybe when we create a generic component
       width: 700,
       height: 500
     };
@@ -22,22 +23,26 @@ class Joyplot extends Component {
     this.loadData();
   }
 
-  createChart(error, dataFlat, cp1919) {
-    // Inital variables
-    var joyplotHeight = 100;
-    var joyplotWidth = 700;
-    var spacing = 26;
+  createChart(error, dataFlat) {
+    // Initial values
+    let margin = { top: 30, right: 10, bottom: 60, left: 10 },
+      width = parseInt(d3.select("." + styles.joyplot).style("width"), 10),
+      joyplotWidth = 700,
+      joyplotHeight = 100,
+      spacing = 26,
+      totalPlots = dataFlat.columns.length - 1,
+      height = (totalPlots - 1) * spacing + joyplotHeight;
+
+    // We are using Mike Bostock's margin conventions https://bl.ocks.org/mbostock/3019563
+    width = width - margin.left - margin.right;
+    // height = height - margin.top - margin.bottom;
 
     // Set up a date parser
     var parseDate = d3.timeParse("%d/%m/%Y");
 
     // set the range scales
-    var xScale = d3.scaleTime().range([0, joyplotWidth]);
+    var xScale = d3.scaleTime().range([0, width]);
     var yScale = d3.scaleLinear().range([joyplotHeight, 0]);
-
-    // console.log(dataFlat);
-
-    // var searchTerm = "Virginia Tech shooting";
 
     // define the chart area
     let area = d3
@@ -77,8 +82,10 @@ class Joyplot extends Component {
     // Draw the chart
     var svg = d3
       .select("." + styles.joyplot)
-      .attr("width", this.state.width)
-      .attr("height", this.state.height);
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");;
 
     var g = svg.append("g");
 
@@ -106,14 +113,18 @@ class Joyplot extends Component {
         return yScale(d[volume]);
       });
 
-      var downPageText = spacing * i + 95;
+      var downPage = spacing * (i - 1);
+
+      console.log(spacing, i, downPage);
+
+      var downPageText = spacing * (i - 1) + 95;
 
       g
         .append("path")
         .datum(dataFlat)
         .attr("fill", "#C70039")
         .style("fill-opacity", 0.7)
-        .attr("transform", "translate(0, " + spacing * i + ")")
+        .attr("transform", "translate(0, " + downPage + ")")
         .attr("d", area);
 
       // g
@@ -129,9 +140,15 @@ class Joyplot extends Component {
         .append("text")
         .text(volume)
         .style("font-size", "16px")
-        .style("font-family", "Helvetica, Arial, sans-serif")
+        // .style("font-family", "Helvetica, Arial, sans-serif")
         .style("fill", "#444")
         .attr("transform", "translate(0, " + downPageText + ")");
+
+      d3.select(window).on('resize', resize); 
+
+      function resize() {
+        console.log('resized!!!')
+      }
     });
   }
 
