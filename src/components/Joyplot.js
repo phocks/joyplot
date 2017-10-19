@@ -21,6 +21,8 @@ class Joyplot extends Component {
 
   componentDidUpdate() {
     this.loadData();
+
+    console.log("hi");
   }
 
   createChart(error, dataFlat) {
@@ -85,7 +87,7 @@ class Joyplot extends Component {
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
       .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");;
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     var g = svg.append("g");
 
@@ -121,9 +123,9 @@ class Joyplot extends Component {
 
       g
         .append("path")
+        .attr("class", styles.singlePlot)
         .datum(dataFlat)
-        .attr("fill", "#C70039")
-        .style("fill-opacity", 0.7)
+        .attr("fill", "rgba(0, 125, 153, 0.6")
         .attr("transform", "translate(0, " + downPage + ")")
         .attr("d", area);
 
@@ -140,14 +142,56 @@ class Joyplot extends Component {
         .append("text")
         .text(volume)
         .style("font-size", "16px")
-        // .style("font-family", "Helvetica, Arial, sans-serif")
         .style("fill", "#444")
         .attr("transform", "translate(0, " + downPageText + ")");
 
-      d3.select(window).on('resize', resize); 
+      d3.select(window).on("resize", resize);
 
       function resize() {
-        console.log('resized!!!')
+        console.log("resized!!!");
+        width = parseInt(d3.select("." + styles.joyplot).style("width"), 10);
+        width = width - margin.left - margin.right;
+
+        console.log(width);
+
+        xScale = d3.scaleTime().range([0, width]);
+
+        xScale.domain(
+          d3.extent(dataFlat, function(d) {
+            return d.Week;
+          })
+        );
+
+        // d3.selectAll("." + styles.singlePlot).remove();
+
+        dataFlat.columns.forEach((volume, i) => {
+          if (volume === "Week") return;
+
+          area
+            // .x(d => {
+            //   return xScale(d.Week);
+            // })
+            .y1(d => {
+              return yScale(d[volume]);
+            });
+
+          // line.y(d => {
+          //   return yScale(d[volume]);
+          // });
+
+          var downPage = spacing * (i - 1);
+
+
+          var downPageText = spacing * (i - 1) + 95;
+
+          g
+            .append("path")
+            .attr("class", styles.singlePlot)
+            .datum(dataFlat)
+            .attr("fill", "rgba(0, 125, 153, 0.6")
+            .attr("transform", "translate(0, " + downPage + ")")
+            .attr("d", area);
+        });
       }
     });
   }
