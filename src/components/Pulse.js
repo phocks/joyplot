@@ -28,6 +28,9 @@ class Pulse extends Component {
     var joyplotWidth = 960;
     var spacing = 100;
 
+    const shootingColor = "rgba(0, 125, 153, 0.5)";
+    const gunControlColor = "rgba(255, 97, 0, 0.75)";
+
     // Set up a date parser
     var parseDate = d3.timeParse("%d/%m/%y");
 
@@ -109,8 +112,6 @@ class Pulse extends Component {
       })
     ]);
 
-    
-
     dataFlat.columns.forEach((volume, i) => {
       if (volume === "Week") return;
 
@@ -126,33 +127,22 @@ class Pulse extends Component {
 
       let downPageText = downPage + 100;
 
-
       g
         .append("path")
         .datum(dataFlat)
-        .attr("fill", '#C70039')
-        .attr('fill-opacity', 0.6)
+        .attr("fill", shootingColor)
         .attr("transform", "translate(0, " + downPage + ")")
         .attr("d", area);
 
-      // g
-      //   .append("path")
-      //   .datum(dataFlat)
-      //   .style("fill", "none")
-      //   .style("stroke", "#900C3F")
-      //   .style("stroke-width", 1.4)
-      //   .attr("transform", "translate(0, " + downPage + ")")
-      //   .attr("d", line);
-
-      g.append('text')
+      g
+        .append("text")
         .text(volume)
-        .style('font-size', "16px")
-        .style('font-family', 'Helvetica, Arial, sans-serif')
-        .style('fill', '#444')
-        .attr("transform", "translate(0, " + downPageText + ")")
-
+        .style("font-size", "16px")
+        .style("font-family", "Helvetica, Arial, sans-serif")
+        .style("fill", "#333")
+        .style("font-weight", "bold")
+        .attr("transform", "translate(0, " + downPageText + ")");
     });
-
 
     gunControlData.columns.forEach((volume, i) => {
       if (volume === "Week") return;
@@ -167,38 +157,16 @@ class Pulse extends Component {
 
       let downPage = spacing * i;
 
-      // downPage = downPage + 200;
-
       g
         .append("path")
         .datum(gunControlData)
-        .attr("fill", 'lightblue')
-        .attr('fill-opacity', 0.6)
+        .attr("fill", gunControlColor)
         .attr("transform", "translate(0, " + downPage + ")")
         .attr("d", area);
-
-      // g
-        // .append("path")
-        // .datum(gunControlData)
-        // .style("fill", "none")
-        // .style("stroke", "blue")
-        // .style("stroke-width", 1.4)
-        // .attr("transform", "translate(0, " + downPage + ")")
-        // .attr("d", line);
-
-      // g.append('text')
-      //   .text(volume)
-      //   .style('font-size', "16px")
-      //   .style('font-family', 'Helvetica, Arial, sans-serif')
-      //   .style('fill', '#444')
-      //   .attr("transform", "translate(0, " + downPage + ")")
-
     });
-
-    
   }
 
-  loadData() { 
+  loadData() {
     d3
       .queue(2) // Load files concurrently (if more than 1)
       .defer(d3.csv, this.props.dataURL)

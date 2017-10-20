@@ -140,7 +140,8 @@ class Joyplot extends Component {
         .append("text")
         .text(volume)
         .style("font-size", "16px")
-        .style("fill", "#444")
+        .style("fill", "#333")
+        .style("font-weight", "bold")
         .attr("transform", "translate(0, " + downPageText + ")");
 
       // Remove and redraw chart
