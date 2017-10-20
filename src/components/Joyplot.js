@@ -6,11 +6,12 @@ class Joyplot extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      // Not using this any more maybe when we create a generic component
-      width: 700,
-      height: 500
-    };
+    // this.state = {
+    //   // Not using this any more maybe when we create a generic component
+    //   width: 700,
+    //   height: 500
+    // };
+
     this.createChart = this.createChart.bind(this); // Bind to access within method
   }
   componentWillMount() {}
@@ -21,29 +22,27 @@ class Joyplot extends Component {
 
   componentDidUpdate() {
     this.loadData();
-
-    console.log("hi");
   }
 
   createChart(error, dataFlat) {
     // Initial values
-    let margin = { top: 30, right: 10, bottom: 60, left: 10 },
+    let margin = { top: 30, right: 20, bottom: 60, left: 20 },
       width = parseInt(d3.select("." + styles.joyplot).style("width"), 10),
       joyplotWidth = 700,
       joyplotHeight = 100,
-      spacing = 26,
+      labelMargin = 200,
+      spacing = 40,
       totalPlots = dataFlat.columns.length - 1,
       height = (totalPlots - 1) * spacing + joyplotHeight;
 
     // We are using Mike Bostock's margin conventions https://bl.ocks.org/mbostock/3019563
     width = width - margin.left - margin.right;
-    // height = height - margin.top - margin.bottom;
 
     // Set up a date parser
     var parseDate = d3.timeParse("%d/%m/%Y");
 
     // set the range scales
-    var xScale = d3.scaleTime().range([0, width]);
+    var xScale = d3.scaleTime().range([labelMargin, width]);
     var yScale = d3.scaleLinear().range([joyplotHeight, 0]);
 
     // define the chart area
@@ -52,20 +51,7 @@ class Joyplot extends Component {
       .x(d => {
         return xScale(d.Week);
       })
-      // .y1(d => {
-      //   return yScale(d[searchTerm]);
-      // })
       .y0(yScale(0))
-      .curve(d3.curveMonotoneX);
-
-    var line = d3
-      .line()
-      .x(d => {
-        return xScale(d.Week);
-      })
-      // .y(d => {
-      //   return yScale(d[searchTerm]);
-      // })
       .curve(d3.curveMonotoneX);
 
     // Parse the dates to use full date format
@@ -111,10 +97,6 @@ class Joyplot extends Component {
         return yScale(d[volume]);
       });
 
-      line.y(d => {
-        return yScale(d[volume]);
-      });
-
       var downPage = spacing * (i - 1);
 
       console.log(spacing, i, downPage);
@@ -128,15 +110,6 @@ class Joyplot extends Component {
         .attr("fill", "rgba(0, 125, 153, 0.6")
         .attr("transform", "translate(0, " + downPage + ")")
         .attr("d", area);
-
-      // g
-      //   .append("path")
-      //   .datum(dataFlat)
-      //   .style("fill", "none")
-      //   .style("stroke", "#900C3F")
-      //   .style("stroke-width", 0.5)
-      //   .attr("transform", "translate(0, " + spacing * i + ")")
-      //   .attr("d", line);
 
       g
         .append("text")
@@ -154,7 +127,7 @@ class Joyplot extends Component {
 
         console.log(width);
 
-        xScale = d3.scaleTime().range([0, width]);
+        xScale = d3.scaleTime().range([labelMargin, width]);
 
         xScale.domain(
           d3.extent(dataFlat, function(d) {
@@ -162,22 +135,16 @@ class Joyplot extends Component {
           })
         );
 
-        // d3.selectAll("." + styles.singlePlot).remove();
+        d3.selectAll("." + styles.singlePlot).remove();
 
         dataFlat.columns.forEach((volume, i) => {
           if (volume === "Week") return;
 
           area
-            // .x(d => {
-            //   return xScale(d.Week);
-            // })
             .y1(d => {
               return yScale(d[volume]);
             });
 
-          // line.y(d => {
-          //   return yScale(d[volume]);
-          // });
 
           var downPage = spacing * (i - 1);
 
