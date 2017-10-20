@@ -30,10 +30,21 @@ class Joyplot extends Component {
       totalPlots = dataFlat.columns.length - 1,
       height = (totalPlots - 1) * spacing + joyplotHeight,
       joyplotFill = "rgba(0, 125, 153, 0.6",
-      lineWidth = 1;
+      lineWidth = 1,
+      shapeRendering = "crispEdges";
 
     // We are using Mike Bostock's margin conventions https://bl.ocks.org/mbostock/3019563
     width = width - margin.left - margin.right;
+
+    // Due to a weird Firefox bug we need to sniff user agent
+    var chrome = navigator.userAgent.indexOf("Chrome") > -1;
+    var explorer = navigator.userAgent.indexOf("MSIE") > -1;
+    var firefox = navigator.userAgent.indexOf("Firefox") > -1;
+    var safari = navigator.userAgent.indexOf("Safari") > -1;
+    var camino = navigator.userAgent.indexOf("Camino") > -1;
+    var opera = navigator.userAgent.toLowerCase().indexOf("op") > -1;
+    if (chrome && safari) safari = false;
+    if (chrome && opera) chrome = false;
 
     // Set up a date parser
     var parseDate = d3.timeParse("%d/%m/%Y");
@@ -99,12 +110,12 @@ class Joyplot extends Component {
         return yScale(d[volume]);
       });
 
-      var downPage = spacing * (i - 1);
-
-      console.log(spacing, i, downPage);
-
+      let downPage = spacing * (i - 1);
       let downPageText = spacing * (i - 1) + labelOffset;
-      let downPageLine = spacing * (i - 1) + joyplotHeight + 1;
+      let downPageLine = spacing * (i - 1) + joyplotHeight;
+
+      // Firefox and Opera render these lines 1px down so
+      if (firefox || opera) downPageLine--;
 
       svg
         .append("path")
@@ -122,7 +133,7 @@ class Joyplot extends Component {
         .attr("stroke", joyplotFill)
         .attr("stroke-width", lineWidth + "px")
         .attr("fill", "none")
-        .attr("shape-rendering", "crispEdges")
+        .attr("shape-rendering", shapeRendering)
         .attr("transform", "translate(0, " + downPageLine + ")");
 
       svg
@@ -160,8 +171,11 @@ class Joyplot extends Component {
           });
 
           let downPage = spacing * (i - 1);
-          let downPageLine = spacing * (i - 1) + joyplotHeight + 1;
+          let downPageLine = spacing * (i - 1) + joyplotHeight;
           let downPageText = spacing * (i - 1) + 95;
+
+          // Firefox and Opera render these lines 1px down so
+          if (firefox || opera) downPageLine--;
 
           svg
             .append("path")
@@ -178,6 +192,7 @@ class Joyplot extends Component {
             .attr("stroke", joyplotFill)
             .attr("stroke-width", lineWidth + "px")
             .attr("fill", "none")
+            .attr("shape-rendering", shapeRendering)
             .attr("transform", "translate(0, " + downPageLine + ")");
         });
       }
