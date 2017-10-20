@@ -6,12 +6,6 @@ class Joyplot extends Component {
   constructor(props) {
     super(props);
 
-    // this.state = {
-    //   // Not using this any more maybe when we create a generic component
-    //   width: 700,
-    //   height: 500
-    // };
-
     this.createChart = this.createChart.bind(this); // Bind to access within method
   }
   componentWillMount() {}
@@ -29,11 +23,14 @@ class Joyplot extends Component {
     let margin = { top: 30, right: 20, bottom: 60, left: 20 },
       width = parseInt(d3.select("." + styles.joyplot).style("width"), 10),
       joyplotWidth = 700,
-      joyplotHeight = 100,
+      joyplotHeight = 76,
       labelMargin = 200,
-      spacing = 40,
+      labelOffset = 70,
+      spacing = 52,
       totalPlots = dataFlat.columns.length - 1,
-      height = (totalPlots - 1) * spacing + joyplotHeight;
+      height = (totalPlots - 1) * spacing + joyplotHeight,
+      joyplotFill = "rgba(0, 125, 153, 0.6",
+      lineWidth = 1;
 
     // We are using Mike Bostock's margin conventions https://bl.ocks.org/mbostock/3019563
     width = width - margin.left - margin.right;
@@ -53,6 +50,12 @@ class Joyplot extends Component {
       })
       .y0(yScale(0))
       .curve(d3.curveMonotoneX);
+
+    let lineData = [[0, 0], [width, 0]];
+
+    let lineGenerator = d3.line();
+
+    let pathString = lineGenerator(lineData);
 
     // Parse the dates to use full date format
     dataFlat.forEach(d => {
@@ -75,8 +78,6 @@ class Joyplot extends Component {
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    var g = svg.append("g");
-
     xScale.domain(
       d3.extent(dataFlat, function(d) {
         return d.Week;
@@ -90,6 +91,7 @@ class Joyplot extends Component {
       })
     ]);
 
+    // Loop through data and plot the area chart
     dataFlat.columns.forEach((volume, i) => {
       if (volume === "Week") return;
 
@@ -101,31 +103,41 @@ class Joyplot extends Component {
 
       console.log(spacing, i, downPage);
 
-      var downPageText = spacing * (i - 1) + 95;
+      let downPageText = spacing * (i - 1) + labelOffset;
+      let downPageLine = spacing * (i - 1) + joyplotHeight + 1;
 
-      g
+      svg
         .append("path")
         .attr("class", styles.singlePlot)
         .datum(dataFlat)
-        .attr("fill", "rgba(0, 125, 153, 0.6")
+        .attr("fill", joyplotFill)
         .attr("transform", "translate(0, " + downPage + ")")
         .attr("d", area);
 
-      g
+      // Draw a baseline
+      svg
+        .append("path")
+        .attr("class", styles.singlePlot)
+        .attr("d", pathString)
+        .attr("stroke", joyplotFill)
+        .attr("stroke-width", lineWidth + "px")
+        .attr("fill", "none")
+        .attr("shape-rendering", "crispEdges")
+        .attr("transform", "translate(0, " + downPageLine + ")");
+
+      svg
         .append("text")
         .text(volume)
         .style("font-size", "16px")
         .style("fill", "#444")
         .attr("transform", "translate(0, " + downPageText + ")");
 
+      // Remove and redraw chart
       d3.select(window).on("resize", resize);
 
       function resize() {
-        console.log("resized!!!");
         width = parseInt(d3.select("." + styles.joyplot).style("width"), 10);
         width = width - margin.left - margin.right;
-
-        console.log(width);
 
         xScale = d3.scaleTime().range([labelMargin, width]);
 
@@ -135,29 +147,38 @@ class Joyplot extends Component {
           })
         );
 
+        lineData = [[0, 0], [width, 0]];
+        pathString = lineGenerator(lineData);
+
         d3.selectAll("." + styles.singlePlot).remove();
 
         dataFlat.columns.forEach((volume, i) => {
           if (volume === "Week") return;
 
-          area
-            .y1(d => {
-              return yScale(d[volume]);
-            });
+          area.y1(d => {
+            return yScale(d[volume]);
+          });
 
+          let downPage = spacing * (i - 1);
+          let downPageLine = spacing * (i - 1) + joyplotHeight + 1;
+          let downPageText = spacing * (i - 1) + 95;
 
-          var downPage = spacing * (i - 1);
-
-
-          var downPageText = spacing * (i - 1) + 95;
-
-          g
+          svg
             .append("path")
             .attr("class", styles.singlePlot)
             .datum(dataFlat)
             .attr("fill", "rgba(0, 125, 153, 0.6")
             .attr("transform", "translate(0, " + downPage + ")")
             .attr("d", area);
+
+          svg
+            .append("path")
+            .attr("class", styles.singlePlot)
+            .attr("d", pathString)
+            .attr("stroke", joyplotFill)
+            .attr("stroke-width", lineWidth + "px")
+            .attr("fill", "none")
+            .attr("transform", "translate(0, " + downPageLine + ")");
         });
       }
     });
