@@ -20,18 +20,21 @@ class Joyplot extends Component {
 
   createChart(error, dataFlat) {
     // Initial values
-    let margin = { top: 30, right: 20, bottom: 60, left: 20 },
+    let margin = { top: 60, right: 20, bottom: 60, left: 20 },
       width = parseInt(d3.select("." + styles.joyplot).style("width"), 10),
       joyplotWidth = 700,
       joyplotHeight = 76,
-      labelMargin = 200,
+      labelMargin = 180,
       labelOffset = 70,
       spacing = 52,
       totalPlots = dataFlat.columns.length - 1,
       height = (totalPlots - 1) * spacing + joyplotHeight,
       joyplotFill = "rgba(0, 125, 153, 0.6",
+      guideFill = "rgba(92, 108, 112, 0.5)",
+      guideTextFill = "rgba(92, 108, 122, 1.0",
       lineWidth = 1,
-      shapeRendering = "crispEdges";
+      shapeRendering = "crispEdges",
+      interestLineWidth = 40;
 
     // We are using Mike Bostock's margin conventions https://bl.ocks.org/mbostock/3019563
     width = width - margin.left - margin.right;
@@ -62,11 +65,13 @@ class Joyplot extends Component {
       .y0(yScale(0))
       .curve(d3.curveMonotoneX);
 
-    let lineData = [[0, 0], [width, 0]];
+    let baselineData = [[0, 0], [width, 0]],
+      interestLineData = [[0, 0], [interestLineWidth, 0]];
 
     let lineGenerator = d3.line();
 
-    let pathString = lineGenerator(lineData);
+    let baseline = lineGenerator(baselineData),
+      interestline = lineGenerator(interestLineData);
 
     // Parse the dates to use full date format
     dataFlat.forEach(d => {
@@ -102,6 +107,38 @@ class Joyplot extends Component {
       })
     ]);
 
+    // Draw some guides up top
+    const searchInterest = svg
+      .append("g")
+      .attr(
+        "transform",
+        "translate(" + (labelMargin - interestLineWidth / 2 + 4) + ", 0)"
+      );
+
+    searchInterest
+      .append("path")
+      .attr("d", interestline)
+      .attr("stroke", guideFill)
+      .attr("stroke-width", lineWidth + "px")
+      .attr("fill", "none")
+      .attr("shape-rendering", shapeRendering);
+
+    const searchInterestText = searchInterest
+      .append("text")
+      .attr("fill", guideTextFill)
+      .attr("font-size", 11)
+      .attr("text-anchor", "end");
+
+    searchInterestText
+      .append("tspan")
+      .text("100% search")
+      .attr("x", -5);
+    searchInterestText
+      .append("tspan")
+      .text("interest")
+      .attr("x", -5)
+      .attr("y", 13);
+
     // Loop through data and plot the area chart
     dataFlat.columns.forEach((volume, i) => {
       if (volume === "Week") return;
@@ -129,7 +166,7 @@ class Joyplot extends Component {
       svg
         .append("path")
         .attr("class", styles.singlePlot)
-        .attr("d", pathString)
+        .attr("d", baseline)
         .attr("stroke", joyplotFill)
         .attr("stroke-width", lineWidth + "px")
         .attr("fill", "none")
@@ -159,8 +196,8 @@ class Joyplot extends Component {
           })
         );
 
-        lineData = [[0, 0], [width, 0]];
-        pathString = lineGenerator(lineData);
+        baselineData = [[0, 0], [width, 0]];
+        baseline = lineGenerator(baselineData);
 
         d3.selectAll("." + styles.singlePlot).remove();
 
@@ -189,7 +226,7 @@ class Joyplot extends Component {
           svg
             .append("path")
             .attr("class", styles.singlePlot)
-            .attr("d", pathString)
+            .attr("d", baseline)
             .attr("stroke", joyplotFill)
             .attr("stroke-width", lineWidth + "px")
             .attr("fill", "none")
