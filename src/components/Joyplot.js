@@ -22,33 +22,32 @@ class Joyplot extends Component {
     // Initial values
     let margin = { top: 60, right: 5, bottom: 70, left: 5 },
       width = parseInt(d3.select("." + styles.joyplot).style("width"), 10),
-      joyplotWidth = 700,
       joyplotHeight = 76,
-      labelMargin = 103,
+      labelMargin = 105,
       spacing = 52,
       totalPlots = dataFlat.columns.length - 1,
       height = (totalPlots - 1) * spacing + joyplotHeight,
-      joyplotFill = "rgba(0, 125, 153, 0.6",
+      joyplotFill = "rgba(0, 125, 153, 0.6)",
       guideFill = "rgba(92, 108, 112, 0.5)",
-      guideTextFill = "rgba(92, 108, 122, 1.0",
+      guideTextFill = "rgba(92, 108, 122, 1.0)",
       lineWidth = 1,
       shapeRendering = "crispEdges",
       interestLineWidth = 40,
-      fontSize = 16;
+      fontSize = 15;
 
     // We are using Mike Bostock's margin conventions https://bl.ocks.org/mbostock/3019563
     width = width - margin.left - margin.right;
 
 
     // Due to a weird Firefox bug we need to sniff user agent
-    var chrome = navigator.userAgent.indexOf("Chrome") > -1;
-    var explorer = navigator.userAgent.indexOf("MSIE") > -1;
-    var firefox = navigator.userAgent.indexOf("Firefox") > -1;
-    var safari = navigator.userAgent.indexOf("Safari") > -1;
-    var camino = navigator.userAgent.indexOf("Camino") > -1;
-    var opera = navigator.userAgent.toLowerCase().indexOf("op") > -1;
-    if (chrome && safari) safari = false;
-    if (chrome && opera) chrome = false;
+    // var chrome = navigator.userAgent.indexOf("Chrome") > -1;
+    // var explorer = navigator.userAgent.indexOf("MSIE") > -1;
+    // var firefox = navigator.userAgent.indexOf("Firefox") > -1;
+    // var safari = navigator.userAgent.indexOf("Safari") > -1;
+    // var camino = navigator.userAgent.indexOf("Camino") > -1;
+    // var opera = navigator.userAgent.toLowerCase().indexOf("op") > -1;
+    // if (chrome && safari) safari = false;
+    // if (chrome && opera) chrome = false;
 
     // Set up a date parser
     var parseDate = d3.timeParse("%d/%m/%Y");
@@ -104,7 +103,7 @@ class Joyplot extends Component {
     );
 
     yScale.domain([
-      0,
+      -1, // Keep the baseline
       d3.max(dataFlat, function(d) {
         return d["Sydney siege"];
       })
@@ -152,11 +151,12 @@ class Joyplot extends Component {
       });
 
       let downPage = spacing * (i - 1);
-      let downPageText = spacing * (i - 1) + margin.top - 1;
+      let downPageText = spacing * (i - 1) + margin.top - 4;
       let downPageLine = spacing * (i - 1) + joyplotHeight;
 
       // Firefox and Opera render these lines 1px down so
-      if (firefox || opera) downPageLine--;
+      // if (firefox || opera) downPageLine--;
+      // Actually it turns out to be a stranger issue
 
       svg
         .append("path")
@@ -167,17 +167,17 @@ class Joyplot extends Component {
         .attr("d", area);
 
       // Draw a baseline
-      svg
-        .append("path")
-        .attr("class", styles.singlePlot)
-        .attr("d", baseline)
-        .attr("stroke", joyplotFill)
-        .attr("stroke-width", lineWidth + "px")
-        .attr("fill", "none")
-        .attr("shape-rendering", shapeRendering)
-        .attr("transform", "translate(0, " + downPageLine + ")");
-
       // svg
+      //   .append("path")
+      //   .attr("class", styles.singlePlot)
+      //   .attr("d", baseline)
+      //   .attr("stroke", joyplotFill)
+      //   .attr("stroke-width", lineWidth + "px")
+      //   .attr("fill", "none")
+      //   .attr("shape-rendering", shapeRendering)
+      //   .attr("transform", "translate(0, " + downPageLine + ")");
+
+      // svg // using div text now due to svg not wrapping
       //   .append("text")
       //   .text(volume)
       //   .style("font-size", "16px")
@@ -200,7 +200,7 @@ class Joyplot extends Component {
         .text(volume)
         .style("display", "table-cell")
         .style("vertical-align", "bottom")
-        .style("font-size", 15 + "px")
+        .style("font-size", fontSize + "px")
         .style("font-weight", "bold")
         .style("text-align", "left")
         .style("height", joyplotHeight + "px")
@@ -238,7 +238,7 @@ class Joyplot extends Component {
           let downPageText = spacing * (i - 1) + 95;
 
           // Firefox and Opera render these lines 1px down so
-          if (firefox || opera) downPageLine--;
+          // if (firefox || opera) downPageLine--;
 
           svg
             .append("path")
@@ -248,15 +248,15 @@ class Joyplot extends Component {
             .attr("transform", "translate(0, " + downPage + ")")
             .attr("d", area);
 
-          svg
-            .append("path")
-            .attr("class", styles.singlePlot)
-            .attr("d", baseline)
-            .attr("stroke", joyplotFill)
-            .attr("stroke-width", lineWidth + "px")
-            .attr("fill", "none")
-            .attr("shape-rendering", shapeRendering)
-            .attr("transform", "translate(0, " + downPageLine + ")");
+          // svg
+          //   .append("path")
+          //   .attr("class", styles.singlePlot)
+          //   .attr("d", baseline)
+          //   .attr("stroke", joyplotFill)
+          //   .attr("stroke-width", lineWidth + "px")
+          //   .attr("fill", "none")
+          //   .attr("shape-rendering", shapeRendering)
+          //   .attr("transform", "translate(0, " + downPageLine + ")");
         });
       }
     });

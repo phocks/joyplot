@@ -1,9 +1,13 @@
 .root {
   text-align: center;
+  font-family: "ABCSans", sans-serif;
+  position: relative;
+  max-width: 760px;
+  margin: auto;
 }
 
 .pulse {
+  display: block;
   background-color: rgba(255, 255, 255, 0);
-  // min-width: 960px;
-  // min-height: 500px;
+  width: 100%;
 }
