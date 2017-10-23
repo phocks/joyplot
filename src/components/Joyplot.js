@@ -34,7 +34,8 @@ class Joyplot extends Component {
       guideTextFill = "rgba(92, 108, 122, 1.0",
       lineWidth = 1,
       shapeRendering = "crispEdges",
-      interestLineWidth = 40;
+      interestLineWidth = 40,
+      fontSize = 16;
 
     // We are using Mike Bostock's margin conventions https://bl.ocks.org/mbostock/3019563
     width = width - margin.left - margin.right;
@@ -87,16 +88,6 @@ class Joyplot extends Component {
     });
 
     const div = d3.select("." + styles.root);
-
-    div
-      .append("span")
-      .style("width", 100 + "px")
-      .text("Hello how are you today I am very well")
-      .style("top", 10 + "px")
-      .style("left", 10 + "px")
-      .style("font-weight", "bold")
-      .style("text-align", "left")
-      .style("position", "absolute");
 
     // Draw the chart
     var svg = d3
@@ -161,7 +152,7 @@ class Joyplot extends Component {
       });
 
       let downPage = spacing * (i - 1);
-      let downPageText = spacing * (i - 1) + labelOffset;
+      let downPageText = spacing * (i - 1) + labelOffset - fontSize * 0.8;
       let downPageLine = spacing * (i - 1) + joyplotHeight;
 
       // Firefox and Opera render these lines 1px down so
@@ -186,13 +177,30 @@ class Joyplot extends Component {
         .attr("shape-rendering", shapeRendering)
         .attr("transform", "translate(0, " + downPageLine + ")");
 
-      svg
-        .append("text")
+      // svg
+      //   .append("text")
+      //   .text(volume)
+      //   .style("font-size", "16px")
+      //   .style("fill", "#333")
+      //   .style("font-weight", "bold")
+      //   .attr("transform", "translate(0, " + downPageText + ")");
+
+      // Render the labels in a span to get text wrapping
+      // We put it in a table-cell to achieve bottom aligning
+      div
+        .append("span")
+        .style("width", 100 + "px")
+        .style("top", downPageText + "px")
+        .style("left", margin.left + "px")
+        .style("position", "absolute")
+        .append("div")
         .text(volume)
-        .style("font-size", "16px")
-        .style("fill", "#333")
+        .style("display", "table-cell")
+        .style("vertical-align", "bottom")
         .style("font-weight", "bold")
-        .attr("transform", "translate(0, " + downPageText + ")");
+        .style("text-align", "left")
+        .style("height", joyplotHeight + "px")
+        .style("color", "#333");
 
       // Remove and redraw chart
       d3.select(window).on("resize", resize);
