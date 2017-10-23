@@ -221,7 +221,7 @@ class Joyplot extends Component {
           })
         );
 
-        baselineData = [[0, 0], [width, 0]];
+        baselineData = [[0, 0], [labelMargin - 5, 0]];
         baseline = lineGenerator(baselineData);
 
         d3.selectAll("." + styles.singlePlot).remove();
