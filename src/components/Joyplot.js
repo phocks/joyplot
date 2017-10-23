@@ -248,15 +248,15 @@ class Joyplot extends Component {
             .attr("transform", "translate(0, " + downPage + ")")
             .attr("d", area);
 
-          // svg
-          //   .append("path")
-          //   .attr("class", styles.singlePlot)
-          //   .attr("d", baseline)
-          //   .attr("stroke", joyplotFill)
-          //   .attr("stroke-width", lineWidth + "px")
-          //   .attr("fill", "none")
-          //   .attr("shape-rendering", shapeRendering)
-          //   .attr("transform", "translate(0, " + downPageLine + ")");
+          svg
+            .append("path")
+            .attr("class", styles.singlePlot)
+            .attr("d", baseline)
+            .attr("stroke", joyplotFill)
+            .attr("stroke-width", lineWidth + "px")
+            .attr("fill", "none")
+            .attr("shape-rendering", shapeRendering)
+            .attr("transform", "translate(0, " + downPageLine + ")");
         });
       }
     });
