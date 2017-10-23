@@ -27,7 +27,7 @@ class Pulse extends Component {
     let margin = { top: 60, right: 5, bottom: 70, left: 5 },
       width = parseInt(d3.select("." + styles.pulse).style("width"), 10),
       joyplotHeight = 130,
-      labelMargin = 0,
+      labelMargin = 120,
       spacing = 100,
       totalPlots = dataFlat.columns.length - 1,
       height = (totalPlots - 1) * spacing + joyplotHeight,
@@ -36,7 +36,8 @@ class Pulse extends Component {
       lineWidth = 1,
       shapeRendering = "crispEdges",
       interestLineWidth = 50,
-      fontSize = 15;
+      fontSize = 15,
+      maxSearchIndex = 100;
 
     // We are using Mike Bostock's margin conventions https://bl.ocks.org/mbostock/3019563
     width = width - margin.left - margin.right;
@@ -48,12 +49,8 @@ class Pulse extends Component {
     var parseDate = d3.timeParse("%d/%m/%y");
 
     // set the range scales
-    var xScale = d3.scaleTime().range([labelMargin, width]);
+    var xScale = d3.scaleTime().range([0, width]);
     var yScale = d3.scaleLinear().range([joyplotHeight, 0]);
-
-    // console.log(dataFlat);
-
-    var searchTerm = "Virginia tech shooting";
 
     // define the chart area
     let area = d3
@@ -62,7 +59,7 @@ class Pulse extends Component {
         return xScale(d.Week);
       })
       .y1(d => {
-        return yScale(d[searchTerm]);
+        return yScale(maxSearchIndex);
       })
       .y0(yScale(0))
       .curve(d3.curveMonotoneX);
@@ -116,7 +113,7 @@ class Pulse extends Component {
     yScale.domain([
       -0.4, // Maintain a base line
       d3.max(dataFlat, function(d) {
-        return d["Virginia tech shooting"];
+        return maxSearchIndex;
       })
     ]);
 
@@ -161,8 +158,7 @@ class Pulse extends Component {
       });
 
       let downPage = (i - 1) * spacing;
-
-      let downPageText = downPage + 100;
+      let downPageText = spacing * (i - 1) + margin.top - 4;
 
       svg
         .append("path")
@@ -171,14 +167,35 @@ class Pulse extends Component {
         .attr("transform", "translate(0, " + downPage + ")")
         .attr("d", area);
 
-      svg
-        .append("text")
+      // svg
+      //   .append("text")
+      //   .text(volume)
+      //   .style("font-size", "16px")
+      //   .style("font-family", "Helvetica, Arial, sans-serif")
+      //   .style("fill", "#333")
+      //   .style("font-weight", "bold")
+      //   .attr("transform", "translate(0, " + downPageText + ")");
+
+      // Render the labels in a span to get text wrapping
+      // We put it in a table-cell to achieve bottom aligning
+      var labels = div
+        .append("span")
+        .classed(styles.labels, true)
+        .style("width", labelMargin - 10 + "px")
+        .style("top", downPageText + "px")
+        .style("left", margin.left + "px")
+        .style("position", "absolute");
+
+      var labelsDiv = labels
+        .append("div")
         .text(volume)
-        .style("font-size", "16px")
-        .style("font-family", "Helvetica, Arial, sans-serif")
-        .style("fill", "#333")
+        .style("display", "table-cell")
+        .style("vertical-align", "bottom")
+        .style("font-size", fontSize + "px")
         .style("font-weight", "bold")
-        .attr("transform", "translate(0, " + downPageText + ")");
+        .style("text-align", "left")
+        .style("height", joyplotHeight + "px")
+        .style("color", "#333");
     });
 
     gunControlData.columns.forEach((volume, i) => {
@@ -197,7 +214,7 @@ class Pulse extends Component {
         .attr("transform", "translate(0, " + downPage + ")")
         .attr("d", area);
     });
-  }
+  } // end createChart
 
   loadData() {
     d3

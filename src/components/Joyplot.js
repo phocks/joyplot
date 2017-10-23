@@ -31,23 +31,22 @@ class Joyplot extends Component {
       guideFill = "rgba(92, 108, 112, 0.5)",
       guideTextFill = "rgba(92, 108, 122, 1.0)",
       lineWidth = 1,
-      shapeRendering = "crispEdges",
+      shapeRendering = "crispEdges", // auto | optimizeSpeed | crispEdges | geometricPrecision | inherit
       interestLineWidth = 40,
       fontSize = 15;
 
     // We are using Mike Bostock's margin conventions https://bl.ocks.org/mbostock/3019563
     width = width - margin.left - margin.right;
 
-
     // Due to a weird Firefox bug we need to sniff user agent
-    // var chrome = navigator.userAgent.indexOf("Chrome") > -1;
-    // var explorer = navigator.userAgent.indexOf("MSIE") > -1;
-    // var firefox = navigator.userAgent.indexOf("Firefox") > -1;
-    // var safari = navigator.userAgent.indexOf("Safari") > -1;
-    // var camino = navigator.userAgent.indexOf("Camino") > -1;
-    // var opera = navigator.userAgent.toLowerCase().indexOf("op") > -1;
-    // if (chrome && safari) safari = false;
-    // if (chrome && opera) chrome = false;
+    var chrome = navigator.userAgent.indexOf("Chrome") > -1;
+    var explorer = navigator.userAgent.indexOf("MSIE") > -1;
+    var firefox = navigator.userAgent.indexOf("Firefox") > -1;
+    var safari = navigator.userAgent.indexOf("Safari") > -1;
+    var camino = navigator.userAgent.indexOf("Camino") > -1;
+    var opera = navigator.userAgent.toLowerCase().indexOf("op") > -1;
+    if (chrome && safari) safari = false;
+    if (chrome && opera) chrome = false;
 
     // Set up a date parser
     var parseDate = d3.timeParse("%d/%m/%Y");
@@ -103,7 +102,7 @@ class Joyplot extends Component {
     );
 
     yScale.domain([
-      -0.8, // Keep the baseline
+      -1, // Keep the baseline
       d3.max(dataFlat, function(d) {
         return d["Sydney siege"];
       })
@@ -177,14 +176,6 @@ class Joyplot extends Component {
         .attr("shape-rendering", shapeRendering)
         .attr("transform", "translate(0, " + downPageLine + ")");
 
-      // svg // using div text now due to svg not wrapping
-      //   .append("text")
-      //   .text(volume)
-      //   .style("font-size", "16px")
-      //   .style("fill", "#333")
-      //   .style("font-weight", "bold")
-      //   .attr("transform", "translate(0, " + downPageText + ")");
-
       // Render the labels in a span to get text wrapping
       // We put it in a table-cell to achieve bottom aligning
       var labels = div
@@ -205,61 +196,61 @@ class Joyplot extends Component {
         .style("text-align", "left")
         .style("height", joyplotHeight + "px")
         .style("color", "#333");
-
-      // Remove and redraw chart
-      d3.select(window).on("resize", resize);
-
-      function resize() {
-        width = parseInt(d3.select("." + styles.joyplot).style("width"), 10);
-        width = width - margin.left - margin.right;
-
-        xScale = d3.scaleTime().range([labelMargin, width]);
-
-        xScale.domain(
-          d3.extent(dataFlat, function(d) {
-            return d.Week;
-          })
-        );
-
-        baselineData = [[0, 0], [labelMargin - 5, 0]];
-        baseline = lineGenerator(baselineData);
-
-        d3.selectAll("." + styles.singlePlot).remove();
-
-        dataFlat.columns.forEach((volume, i) => {
-          if (volume === "Week") return;
-
-          area.y1(d => {
-            return yScale(d[volume]);
-          });
-
-          let downPage = spacing * (i - 1);
-          let downPageLine = spacing * (i - 1) + joyplotHeight;
-          let downPageText = spacing * (i - 1) + 95;
-
-          // Firefox and Opera render these lines 1px down so
-          // if (firefox || opera) downPageLine--;
-
-          svg
-            .append("path")
-            .attr("class", styles.singlePlot)
-            .datum(dataFlat)
-            .attr("fill", "rgba(0, 125, 153, 0.6")
-            .attr("transform", "translate(0, " + downPage + ")")
-            .attr("d", area);
-
-          svg
-            .append("path")
-            .attr("class", styles.singlePlot)
-            .attr("d", baseline)
-            .attr("stroke", joyplotFill)
-            .attr("stroke-width", lineWidth + "px")
-            .attr("fill", "none")
-            .attr("shape-rendering", shapeRendering)
-            .attr("transform", "translate(0, " + downPageLine + ")");
-        });
-      }
     });
+
+    // Remove and redraw chart
+    d3.select(window).on("resize", resize);
+
+    function resize() {
+      width = parseInt(d3.select("." + styles.joyplot).style("width"), 10);
+      width = width - margin.left - margin.right;
+
+      xScale = d3.scaleTime().range([labelMargin, width]);
+
+      xScale.domain(
+        d3.extent(dataFlat, function(d) {
+          return d.Week;
+        })
+      );
+
+      baselineData = [[0, 0], [labelMargin - 5, 0]];
+      baseline = lineGenerator(baselineData);
+
+      d3.selectAll("." + styles.singlePlot).remove();
+
+      dataFlat.columns.forEach((volume, i) => {
+        if (volume === "Week") return;
+
+        area.y1(d => {
+          return yScale(d[volume]);
+        });
+
+        let downPage = spacing * (i - 1);
+        let downPageLine = spacing * (i - 1) + joyplotHeight;
+        let downPageText = spacing * (i - 1) + 95;
+
+        // Firefox and Opera render these lines 1px down so
+        // if (firefox || opera) downPageLine--;
+
+        svg
+          .append("path")
+          .attr("class", styles.singlePlot)
+          .datum(dataFlat)
+          .attr("fill", "rgba(0, 125, 153, 0.6")
+          .attr("transform", "translate(0, " + downPage + ")")
+          .attr("d", area);
+
+        svg
+          .append("path")
+          .attr("class", styles.singlePlot)
+          .attr("d", baseline)
+          .attr("stroke", joyplotFill)
+          .attr("stroke-width", lineWidth + "px")
+          .attr("fill", "none")
+          .attr("shape-rendering", shapeRendering)
+          .attr("transform", "translate(0, " + downPageLine + ")");
+      });
+    }
   }
 
   loadData() {
