@@ -68,9 +68,7 @@ class Pulse extends Component {
       .curve(d3.curveMonotoneX);
 
     let interestLineData = [[0, 0], [interestLineWidth, 0]];
-
     let lineGenerator = d3.line();
-
     let interestline = lineGenerator(interestLineData);
 
     // Parse the dates to use full date format
@@ -98,6 +96,9 @@ class Pulse extends Component {
       });
     });
 
+    // Get the containing div for labels
+    const div = d3.select("." + styles.root);
+
     // Draw the chart
     var svg = d3
       .select("." + styles.pulse)
@@ -113,7 +114,7 @@ class Pulse extends Component {
     );
 
     yScale.domain([
-      0,
+      -0.4, // Maintain a base line
       d3.max(dataFlat, function(d) {
         return d["Virginia tech shooting"];
       })

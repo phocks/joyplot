@@ -65,7 +65,7 @@ class Joyplot extends Component {
       .y0(yScale(0))
       .curve(d3.curveMonotoneX);
 
-    let baselineData = [[0, 0], [width, 0]],
+    let baselineData = [[0, 0], [labelMargin - 5, 0]],
       interestLineData = [[0, 0], [interestLineWidth, 0]];
 
     let lineGenerator = d3.line();
@@ -103,7 +103,7 @@ class Joyplot extends Component {
     );
 
     yScale.domain([
-      -1, // Keep the baseline
+      -0.8, // Keep the baseline
       d3.max(dataFlat, function(d) {
         return d["Sydney siege"];
       })
@@ -167,15 +167,15 @@ class Joyplot extends Component {
         .attr("d", area);
 
       // Draw a baseline
-      // svg
-      //   .append("path")
-      //   .attr("class", styles.singlePlot)
-      //   .attr("d", baseline)
-      //   .attr("stroke", joyplotFill)
-      //   .attr("stroke-width", lineWidth + "px")
-      //   .attr("fill", "none")
-      //   .attr("shape-rendering", shapeRendering)
-      //   .attr("transform", "translate(0, " + downPageLine + ")");
+      svg
+        .append("path")
+        .attr("class", styles.singlePlot)
+        .attr("d", baseline)
+        .attr("stroke", joyplotFill)
+        .attr("stroke-width", lineWidth + "px")
+        .attr("fill", "none")
+        .attr("shape-rendering", shapeRendering)
+        .attr("transform", "translate(0, " + downPageLine + ")");
 
       // svg // using div text now due to svg not wrapping
       //   .append("text")
