@@ -20,12 +20,11 @@ class Joyplot extends Component {
 
   createChart(error, dataFlat) {
     // Initial values
-    let margin = { top: 60, right: 20, bottom: 60, left: 20 },
+    let margin = { top: 60, right: 5, bottom: 70, left: 5 },
       width = parseInt(d3.select("." + styles.joyplot).style("width"), 10),
       joyplotWidth = 700,
       joyplotHeight = 76,
-      labelMargin = 180,
-      labelOffset = 70,
+      labelMargin = 103,
       spacing = 52,
       totalPlots = dataFlat.columns.length - 1,
       height = (totalPlots - 1) * spacing + joyplotHeight,
@@ -39,6 +38,7 @@ class Joyplot extends Component {
 
     // We are using Mike Bostock's margin conventions https://bl.ocks.org/mbostock/3019563
     width = width - margin.left - margin.right;
+
 
     // Due to a weird Firefox bug we need to sniff user agent
     var chrome = navigator.userAgent.indexOf("Chrome") > -1;
@@ -152,7 +152,7 @@ class Joyplot extends Component {
       });
 
       let downPage = spacing * (i - 1);
-      let downPageText = spacing * (i - 1) + labelOffset - fontSize * 0.8;
+      let downPageText = spacing * (i - 1) + margin.top - 1;
       let downPageLine = spacing * (i - 1) + joyplotHeight;
 
       // Firefox and Opera render these lines 1px down so
@@ -187,16 +187,20 @@ class Joyplot extends Component {
 
       // Render the labels in a span to get text wrapping
       // We put it in a table-cell to achieve bottom aligning
-      div
+      var labels = div
         .append("span")
-        .style("width", 100 + "px")
+        .classed(styles.labels, true)
+        .style("width", labelMargin - 10 + "px")
         .style("top", downPageText + "px")
         .style("left", margin.left + "px")
-        .style("position", "absolute")
+        .style("position", "absolute");
+
+      var labelsDiv = labels
         .append("div")
         .text(volume)
         .style("display", "table-cell")
         .style("vertical-align", "bottom")
+        .style("font-size", 15 + "px")
         .style("font-weight", "bold")
         .style("text-align", "left")
         .style("height", joyplotHeight + "px")

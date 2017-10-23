@@ -2,6 +2,8 @@
   text-align: center;
   font-family: "ABCSans", sans-serif;
   position: relative;
+  max-width: 760px;
+  margin: auto;
 }
 
 .joyplot {
@@ -12,4 +14,13 @@
 
 .single-plot {
   width: auto;
+}
+
+.labels {
+  
+  // width: 120px;
+
+  // @media screen and (min-width: 500px) {
+  //   width: 170px;
+  // }
 }
