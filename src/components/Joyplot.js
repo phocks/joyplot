@@ -86,6 +86,18 @@ class Joyplot extends Component {
       });
     });
 
+    const div = d3.select("." + styles.root);
+
+    div
+      .append("span")
+      .style("width", 100 + "px")
+      .text("Hello how are you today I am very well")
+      .style("top", 10 + "px")
+      .style("left", 10 + "px")
+      .style("font-weight", "bold")
+      .style("text-align", "left")
+      .style("position", "absolute");
+
     // Draw the chart
     var svg = d3
       .select("." + styles.joyplot)
@@ -133,6 +145,7 @@ class Joyplot extends Component {
       .append("tspan")
       .text("100% search")
       .attr("x", -5);
+
     searchInterestText
       .append("tspan")
       .text("interest")
