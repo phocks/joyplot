@@ -199,9 +199,11 @@ class Joyplot extends Component {
     });
 
     // Remove and redraw chart
-    d3.select(window).on("resize", resize);
+    // d3.select(window).on("resize", resizeJoyplot);
 
-    function resize() {
+    window.addEventListener("resize", resizeJoyplot);
+
+    function resizeJoyplot() {
       width = parseInt(d3.select("." + styles.joyplot).style("width"), 10);
       width = width - margin.left - margin.right;
 

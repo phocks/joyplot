@@ -6,10 +6,6 @@ class Pulse extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      width: 700,
-      height: 1000
-    };
     this.createChart = this.createChart.bind(this); // Bind to access within method
   }
   componentWillMount() {}
@@ -27,7 +23,7 @@ class Pulse extends Component {
     let margin = { top: 60, right: 5, bottom: 70, left: 5 },
       width = parseInt(d3.select("." + styles.pulse).style("width"), 10),
       joyplotHeight = 130,
-      labelMargin = 120,
+      labelMargin = 110,
       spacing = 100,
       totalPlots = dataFlat.columns.length - 1,
       height = (totalPlots - 1) * spacing + joyplotHeight,
@@ -162,19 +158,11 @@ class Pulse extends Component {
 
       svg
         .append("path")
+        .classed(styles.singlePlot, true)
         .datum(dataFlat)
         .attr("fill", shootingColor)
         .attr("transform", "translate(0, " + downPage + ")")
         .attr("d", area);
-
-      // svg
-      //   .append("text")
-      //   .text(volume)
-      //   .style("font-size", "16px")
-      //   .style("font-family", "Helvetica, Arial, sans-serif")
-      //   .style("fill", "#333")
-      //   .style("font-weight", "bold")
-      //   .attr("transform", "translate(0, " + downPageText + ")");
 
       // Render the labels in a span to get text wrapping
       // We put it in a table-cell to achieve bottom aligning
@@ -196,24 +184,107 @@ class Pulse extends Component {
         .style("text-align", "left")
         .style("height", joyplotHeight + "px")
         .style("color", "#333");
-    });
 
-    gunControlData.columns.forEach((volume, i) => {
-      if (volume === "Week") return;
+      // Try to render gun control in same forEach loop
+      // rather than it's own loop to avoid overpaint
+      let gunControlVolumeLabel = gunControlData.columns[i];
 
       area.y1(d => {
-        return yScale(d[volume]);
+        return yScale(d[gunControlVolumeLabel]);
       });
-
-      let downPage = (i - 1) * spacing;
 
       svg
         .append("path")
+        .classed(styles.singlePlot, true)
         .datum(gunControlData)
         .attr("fill", gunControlColor)
         .attr("transform", "translate(0, " + downPage + ")")
         .attr("d", area);
     });
+
+    // Remove and redraw chart
+    // d3.select(window).on("resize", resizePulse);
+    // Use addEventListener to avoid overriding the listener
+    window.addEventListener("resize", resizePulse);
+
+    function resizePulse() {
+      width = parseInt(d3.select("." + styles.pulse).style("width"), 10);
+      width = width - margin.left - margin.right;
+
+      xScale = d3.scaleTime().range([0, width]);
+
+      xScale.domain(
+        d3.extent(dataFlat, function(d) {
+          return d.Week;
+        })
+      );
+
+      // baselineData = [[0, 0], [labelMargin - 5, 0]];
+      // baseline = lineGenerator(baselineData);
+
+      d3.selectAll("." + styles.singlePlot).remove();
+
+      searchInterest.attr(
+        "transform",
+        "translate(" + (width * 0.33 - interestLineWidth / 2 + 4) + ", 0)"
+      );
+
+      dataFlat.columns.forEach((volume, i) => {
+        if (volume === "Week") return;
+
+        area.y1(d => {
+          return yScale(d[volume]);
+        });
+
+        let downPage = spacing * (i - 1);
+        let downPageLine = spacing * (i - 1) + joyplotHeight;
+        let downPageText = spacing * (i - 1) + 95;
+
+        // Firefox and Opera render these lines 1px down so
+        // if (firefox || opera) downPageLine--;
+
+        // svg
+        //   .append("path")
+        //   .attr("class", styles.singlePlot)
+        //   .datum(dataFlat)
+        //   .attr("fill", "rgba(0, 125, 153, 0.6")
+        //   .attr("transform", "translate(0, " + downPage + ")")
+        //   .attr("d", area);
+
+        // svg
+        //   .append("path")
+        //   .attr("class", styles.singlePlot)
+        //   .attr("d", baseline)
+        //   .attr("stroke", joyplotFill)
+        //   .attr("stroke-width", lineWidth + "px")
+        //   .attr("fill", "none")
+        //   .attr("shape-rendering", shapeRendering)
+        //   .attr("transform", "translate(0, " + downPageLine + ")");
+        svg
+          .append("path")
+          .classed(styles.singlePlot, true)
+          .datum(dataFlat)
+          .attr("fill", shootingColor)
+          .attr("transform", "translate(0, " + downPage + ")")
+          .attr("d", area);
+
+        // Try to render gun control in same forEach loop
+        // rather than it's own loop to avoid overpaint
+        let gunControlVolumeLabel = gunControlData.columns[i];
+
+        area.y1(d => {
+          return yScale(d[gunControlVolumeLabel]);
+        });
+
+        svg
+          .append("path")
+          .classed(styles.singlePlot, true)
+          .datum(gunControlData)
+          .attr("fill", gunControlColor)
+          .attr("transform", "translate(0, " + downPage + ")")
+          .attr("d", area);
+      });
+    }
   } // end createChart
 
   loadData() {
