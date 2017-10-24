@@ -185,12 +185,22 @@ class Joyplot extends Component {
       .attr("shape-rendering", shapeRendering);
 
     // Timeline text
-    div
+    let timeLineTextLeft = div
       .append("span")
       .text("Dec 15, 2014")
       .style("position", "absolute")
-      .style("top", (timeLineYPos + margin.top) - (guideFontSize * 0.6) + "px")
-      .style("left", (labelMargin + (width * 0.1)) + "px")
+      .style("top", timeLineYPos + margin.top - guideFontSize * 0.6 + "px")
+      .style("left", labelMargin + width * 0.05 + "px")
+      .style("color", guideTextFill)
+      .style("font-size", guideFontSize + "px")
+      .style("background-color", "#f9f9f9");
+
+    let timeLineTextRight = div
+      .append("span")
+      .text("Oct 1, 2007")
+      .style("position", "absolute")
+      .style("top", timeLineYPos + margin.top - guideFontSize * 0.6 + "px")
+      .style("right", width * 0.05 + "px")
       .style("color", guideTextFill)
       .style("font-size", guideFontSize + "px")
       .style("background-color", "#f9f9f9");
@@ -276,6 +286,8 @@ class Joyplot extends Component {
       // Direct element manipulation first
       timeLine.attr("x2", width);
       timeLineRightBoundary.attr("x1", width).attr("x2", width);
+      timeLineTextLeft.style("left", labelMargin + width * 0.05 + "px");
+      timeLineTextRight.style("right", width * 0.05 + "px");
 
       d3.selectAll("." + styles.singlePlot).remove();
 
