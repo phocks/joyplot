@@ -33,6 +33,7 @@ class Pulse extends Component {
       shapeRendering = "crispEdges",
       interestLineWidth = 50,
       fontSize = 15,
+      guideFontSize = 11,
       maxSearchIndex = 100;
 
     // We are using Mike Bostock's margin conventions https://bl.ocks.org/mbostock/3019563
@@ -146,6 +147,65 @@ class Pulse extends Component {
       .attr("x", -5)
       .attr("y", 13);
 
+    // Time periods
+    let timeLineYPos = -25;
+
+    let timeLine = svg
+      .append("line")
+      .attr("x1", 0)
+      .attr("y1", timeLineYPos)
+      .attr("x2", width)
+      .attr("y2", timeLineYPos)
+      .attr("stroke", guideFill)
+      .attr("stroke-width", lineWidth + "px")
+      .attr("fill", "none")
+      .attr("shape-rendering", shapeRendering);
+
+    // Left boundary line
+    svg
+      .append("line")
+      .attr("x1", 0)
+      .attr("y1", timeLineYPos - 5.5)
+      .attr("x2", 0)
+      .attr("y2", timeLineYPos + 5.5)
+      .attr("stroke", guideFill)
+      .attr("stroke-width", lineWidth + "px")
+      .attr("fill", "none")
+      .attr("shape-rendering", shapeRendering);
+
+    // Right moving boundary line - resize below
+    let timeLineRightBoundary = svg
+      .append("line")
+      .attr("x1", width)
+      .attr("y1", timeLineYPos - 5.5)
+      .attr("x2", width)
+      .attr("y2", timeLineYPos + 5.5)
+      .attr("stroke", guideFill)
+      .attr("stroke-width", lineWidth + "px")
+      .attr("fill", "none")
+      .attr("shape-rendering", shapeRendering);
+
+    // Timeline text
+    let timeLineTextLeft = div
+      .append("span")
+      .text("1 week")
+      .style("position", "absolute")
+      .style("top", timeLineYPos + margin.top - guideFontSize * 0.6 + "px")
+      .style("left", ((width * 0.15) - 50) + "px")
+      .style("color", guideTextFill)
+      .style("font-size", guideFontSize + "px")
+      .style("background-color", "#f9f9f9");
+
+    let timeLineTextRight = div
+      .append("span")
+      .text("2 weeks")
+      .style("position", "absolute")
+      .style("top", timeLineYPos + margin.top - guideFontSize * 0.6 + "px")
+      .style("right", ((width * 0.35) - 20) + "px")
+      .style("color", guideTextFill)
+      .style("font-size", guideFontSize + "px")
+      .style("background-color", "#f9f9f9");
+
     dataFlat.columns.forEach((volume, i) => {
       if (volume === "Week") return;
 
@@ -221,6 +281,12 @@ class Pulse extends Component {
 
       // baselineData = [[0, 0], [labelMargin - 5, 0]];
       // baseline = lineGenerator(baselineData);
+
+      // Direct resizing
+      timeLine.attr("x2", width);
+      timeLineRightBoundary.attr("x1", width).attr("x2", width);
+      timeLineTextLeft.style("left", ((width * 0.15) - 20) + "px")
+      timeLineTextRight.style("right", ((width * 0.35) - 20) + "px");
 
       d3.selectAll("." + styles.singlePlot).remove();
 
