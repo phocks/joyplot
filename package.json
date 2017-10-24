@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "d3": "^4.11.0",
+    "date-fns": "^1.29.0",
     "preact": "^8.2.5",
     "preact-compat": "^3.17.0"
   }

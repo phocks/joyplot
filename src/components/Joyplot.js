@@ -1,6 +1,7 @@
 import { h, Component } from "preact";
 import * as styles from "./Joyplot.scss";
 import * as d3 from "d3";
+import { format } from 'date-fns'
 
 class Joyplot extends Component {
   constructor(props) {
@@ -50,7 +51,7 @@ class Joyplot extends Component {
     if (chrome && opera) chrome = false;
 
     // Set up a date parser
-    var parseDate = d3.timeParse("%d/%m/%Y");
+    var parseDate = d3.timeParse("%d/%m/%y");
 
     // set the range scales
     var xScale = d3.scaleTime().range([labelMargin, width]);
@@ -87,15 +88,20 @@ class Joyplot extends Component {
       });
     });
 
+    let firstWeek = dataFlat[0].Week,
+      lastWeek = dataFlat[dataFlat.length-1].Week;
+    console.log(firstWeek, lastWeek);
+
     // Grab out containing div for DOM operations
     const div = d3.select("." + styles.root);
 
     // Draw the chart
     var svg = d3
       .select("." + styles.joyplot)
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
+      // .attr("width", width + margin.left + margin.right)
+      .style("height", height + margin.top + margin.bottom)
       .append("g")
+      
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     xScale.domain(
@@ -187,7 +193,7 @@ class Joyplot extends Component {
     // Timeline text
     let timeLineTextLeft = div
       .append("span")
-      .text("Dec 15, 2014")
+      .text(format(firstWeek, 'MMM D, YYYY'))
       .style("position", "absolute")
       .style("top", timeLineYPos + margin.top - guideFontSize * 0.6 + "px")
       .style("left", labelMargin + width * 0.05 + "px")
@@ -197,7 +203,7 @@ class Joyplot extends Component {
 
     let timeLineTextRight = div
       .append("span")
-      .text("Oct 1, 2007")
+      .text(format(lastWeek, 'MMM D, YYYY'))
       .style("position", "absolute")
       .style("top", timeLineYPos + margin.top - guideFontSize * 0.6 + "px")
       .style("right", width * 0.05 + "px")
