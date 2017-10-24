@@ -33,7 +33,8 @@ class Joyplot extends Component {
       lineWidth = 1,
       shapeRendering = "crispEdges", // auto | optimizeSpeed | crispEdges | geometricPrecision | inherit
       interestLineWidth = 40,
-      fontSize = 15;
+      fontSize = 15,
+      guideFontSize = 11;
 
     // We are using Mike Bostock's margin conventions https://bl.ocks.org/mbostock/3019563
     width = width - margin.left - margin.right;
@@ -64,13 +65,14 @@ class Joyplot extends Component {
       .y0(yScale(0))
       .curve(d3.curveMonotoneX);
 
+    // Set up some lines etc
     let baselineData = [[0, 0], [labelMargin - 5, 0]],
       interestLineData = [[0, 0], [interestLineWidth, 0]];
 
     let lineGenerator = d3.line();
 
-    let baseline = lineGenerator(baselineData),
-      interestline = lineGenerator(interestLineData);
+    let baseline = lineGenerator(baselineData), // Underline labels
+      interestline = lineGenerator(interestLineData); // Point out 100% search interest
 
     // Parse the dates to use full date format
     dataFlat.forEach(d => {
@@ -85,6 +87,7 @@ class Joyplot extends Component {
       });
     });
 
+    // Grab out containing div for DOM operations
     const div = d3.select("." + styles.root);
 
     // Draw the chart
@@ -104,11 +107,13 @@ class Joyplot extends Component {
     yScale.domain([
       -1, // Keep the baseline
       d3.max(dataFlat, function(d) {
+        // Or just set to 100
         return d["Sydney siege"];
       })
     ]);
 
     // Draw some guides up top
+    // 100% search interest
     const searchInterest = svg
       .append("g")
       .attr(
@@ -127,7 +132,7 @@ class Joyplot extends Component {
     const searchInterestText = searchInterest
       .append("text")
       .attr("fill", guideTextFill)
-      .attr("font-size", 11)
+      .attr("font-size", guideFontSize)
       .attr("text-anchor", "end");
 
     searchInterestText
@@ -140,6 +145,55 @@ class Joyplot extends Component {
       .text("interest")
       .attr("x", -5)
       .attr("y", 13);
+
+    // Time periods
+    let timeLineYPos = joyplotHeight * 0.4;
+
+    let timeLine = svg
+      .append("line")
+      .attr("x1", labelMargin)
+      .attr("y1", timeLineYPos)
+      .attr("x2", width)
+      .attr("y2", timeLineYPos)
+      .attr("stroke", guideFill)
+      .attr("stroke-width", lineWidth + "px")
+      .attr("fill", "none")
+      .attr("shape-rendering", shapeRendering);
+
+    // Left boundary line
+    svg
+      .append("line")
+      .attr("x1", labelMargin)
+      .attr("y1", timeLineYPos - 5.5)
+      .attr("x2", labelMargin)
+      .attr("y2", timeLineYPos + 5.5)
+      .attr("stroke", guideFill)
+      .attr("stroke-width", lineWidth + "px")
+      .attr("fill", "none")
+      .attr("shape-rendering", shapeRendering);
+
+    // Right moving boundary line - resize below
+    let timeLineRightBoundary = svg
+      .append("line")
+      .attr("x1", width)
+      .attr("y1", timeLineYPos - 5.5)
+      .attr("x2", width)
+      .attr("y2", timeLineYPos + 5.5)
+      .attr("stroke", guideFill)
+      .attr("stroke-width", lineWidth + "px")
+      .attr("fill", "none")
+      .attr("shape-rendering", shapeRendering);
+
+    // Timeline text
+    div
+      .append("span")
+      .text("Dec 15, 2014")
+      .style("position", "absolute")
+      .style("top", (timeLineYPos + margin.top) - (guideFontSize * 0.6) + "px")
+      .style("left", (labelMargin + (width * 0.1)) + "px")
+      .style("color", guideTextFill)
+      .style("font-size", guideFontSize + "px")
+      .style("background-color", "#f9f9f9");
 
     // Loop through data and plot the area chart
     dataFlat.columns.forEach((volume, i) => {
@@ -207,6 +261,7 @@ class Joyplot extends Component {
       width = parseInt(d3.select("." + styles.joyplot).style("width"), 10);
       width = width - margin.left - margin.right;
 
+      // Update properties with new widths
       xScale = d3.scaleTime().range([labelMargin, width]);
 
       xScale.domain(
@@ -217,6 +272,10 @@ class Joyplot extends Component {
 
       baselineData = [[0, 0], [labelMargin - 5, 0]];
       baseline = lineGenerator(baselineData);
+
+      // Direct element manipulation first
+      timeLine.attr("x2", width);
+      timeLineRightBoundary.attr("x1", width).attr("x2", width);
 
       d3.selectAll("." + styles.singlePlot).remove();
 
