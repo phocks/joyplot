@@ -6,11 +6,13 @@ const root = document.querySelector(`[data-joyplot-root]`);
 const elemJoyplot = document.querySelector("[name=joyplot]");
 const elemStacked = document.querySelector("[name=stacked]");
 const elemControl = document.querySelector("[name=control]");
+const elemVegas = document.querySelector("[name=vegas]");
 
 function init() {
   draw(elemJoyplot, "joyplot");
   draw(elemStacked, "stacked");
   draw(elemControl, "control");
+  draw(elemVegas, "vegas");
 }
 
 function draw(element, type) {

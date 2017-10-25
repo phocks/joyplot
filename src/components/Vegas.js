@@ -1,8 +1,8 @@
 import { h, Component } from "preact";
-import * as styles from "./Pulse.scss";
+import * as styles from "./Vegas.scss";
 import * as d3 from "d3";
 
-class Pulse extends Component {
+class Vegas extends Component {
   constructor(props) {
     super(props);
 
@@ -21,10 +21,10 @@ class Pulse extends Component {
   createChart(error, dataFlat, gunControlData) {
     // Inital variables
     let margin = { top: 60, right: 5, bottom: 70, left: 5 },
-      width = parseInt(d3.select("." + styles.pulse).style("width"), 10),
-      joyplotHeight = 75,
+      width = parseInt(d3.select("." + styles.control).style("width"), 10),
+      joyplotHeight = 155,
       labelMargin = 110,
-      spacing = 54,
+      spacing = 50,
       totalPlots = dataFlat.columns.length - 1,
       height = (totalPlots - 1) * spacing + joyplotHeight,
       guideFill = "rgba(92, 108, 112, 0.5)",
@@ -35,7 +35,7 @@ class Pulse extends Component {
       fontSize = 15,
       guideFontSize = 11,
       maxSearchIndex = 100,
-      splitPoint = 0.288;
+      splitPoint = 0.222;
 
     // We are using Mike Bostock's margin conventions https://bl.ocks.org/mbostock/3019563
     width = width - margin.left - margin.right;
@@ -96,7 +96,7 @@ class Pulse extends Component {
 
     // Draw the chart
     var svg = d3
-      .select("." + styles.pulse)
+      .select("." + styles.control)
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
       .append("g")
@@ -120,7 +120,7 @@ class Pulse extends Component {
       .append("g")
       .attr(
         "transform",
-        "translate(" + (width * 0.33 - interestLineWidth / 2 + 4) + ", 0)"
+        "translate(" + (width * 0.255 - interestLineWidth / 2 + 4) + ", 0)"
       );
 
     searchInterest
@@ -198,66 +198,6 @@ class Pulse extends Component {
       .attr("fill", "none")
       .attr("shape-rendering", shapeRendering);
 
-    // Coloured pointers to area charts
-    let shootingGroupColor = "#007D99";
-
-    let shootingGroup = svg
-      .append("g")
-      .attr(
-        "transform",
-        "translate(" + width * 0.48 + ", " + joyplotHeight * 0.55 + ")"
-      );
-
-    shootingGroup
-      .append("text")
-      .attr("font-size", guideFontSize)
-      .attr("font-weight", "bold")
-      .text("SHOOTING")
-      .attr("fill", shootingGroupColor);
-
-    shootingGroup
-      .append("line")
-      .attr("x1", -2)
-      .attr("y1", 2)
-      .attr("x2", -10)
-      .attr("y2", 10)
-      .attr("stroke", shootingGroupColor);
-
-    // Gun control label text group
-    let gunControlGroupColor = "#C44B00";
-
-    let gunControlGroup = svg
-      .append("g")
-      .attr(
-        "transform",
-        "translate(" + width * 0.85 + ", " + joyplotHeight * 0.55 + ")"
-      );
-
-    var gunControlText = gunControlGroup
-      .append("text")
-      .attr("font-size", guideFontSize)
-      .attr("font-weight", "bold")
-      .attr("fill", gunControlGroupColor);
-
-    gunControlText
-      .append("tspan")
-      .text("GUN")
-      .attr("text-anchor", "middle");
-    gunControlText
-      .append("tspan")
-      .text("CONTROL")
-      .attr("x", 0)
-      .attr("y", guideFontSize)
-      .attr("text-anchor", "middle");
-
-    gunControlGroup
-      .append("line")
-      .attr("x1", 0)
-      .attr("y1", guideFontSize + 5)
-      .attr("x2", 0)
-      .attr("y2", guideFontSize + 15)
-      .attr("stroke", gunControlGroupColor);
-
     // Timeline text
     let timeLineTextLeft = div
       .append("span")
@@ -271,13 +211,73 @@ class Pulse extends Component {
 
     let timeLineTextRight = div
       .append("span")
-      .text("2 weeks")
+      .text("3 weeks")
       .style("position", "absolute")
       .style("top", timeLineYPos + margin.top - guideFontSize * 0.6 + "px")
       .style("right", width * 0.37 - 20 + "px")
       .style("color", guideTextFill)
       .style("font-size", guideFontSize + "px")
       .style("background-color", "#f9f9f9");
+
+    // Coloured pointers to area charts
+    // let shootingGroupColor = "#007D99";
+
+    // let shootingGroup = svg
+    //   .append("g")
+    //   .attr(
+    //     "transform",
+    //     "translate(" + width * 0.48 + ", " + joyplotHeight * 0.55 + ")"
+    //   );
+
+    // shootingGroup
+    //   .append("text")
+    //   .attr("font-size", guideFontSize)
+    //   .attr("font-weight", "bold")
+    //   .text("SHOOTING")
+    //   .attr("fill", shootingGroupColor);
+
+    // shootingGroup
+    //   .append("line")
+    //   .attr("x1", -2)
+    //   .attr("y1", 2)
+    //   .attr("x2", -10)
+    //   .attr("y2", 10)
+    //   .attr("stroke", shootingGroupColor);
+
+    // Gun control label text group
+    // let gunControlGroupColor = "#C44B00";
+
+    // let gunControlGroup = svg
+    //   .append("g")
+    //   .attr(
+    //     "transform",
+    //     "translate(" + width * 0.85 + ", " + joyplotHeight * 0.55 + ")"
+    //   );
+
+    // var gunControlText = gunControlGroup
+    //   .append("text")
+    //   .attr("font-size", guideFontSize)
+    //   .attr("font-weight", "bold")
+    //   .attr("fill", gunControlGroupColor);
+
+    // gunControlText
+    //   .append("tspan")
+    //   .text("GUN")
+    //   .attr("text-anchor", "middle");
+    // gunControlText
+    //   .append("tspan")
+    //   .text("CONTROL")
+    //   .attr("x", 0)
+    //   .attr("y", guideFontSize)
+    //   .attr("text-anchor", "middle");
+
+    // gunControlGroup
+    //   .append("line")
+    //   .attr("x1", 0)
+    //   .attr("y1", guideFontSize + 5)
+    //   .attr("x2", 0)
+    //   .attr("y2", guideFontSize + 15)
+    //   .attr("stroke", gunControlGroupColor);
 
     dataFlat.columns.forEach((volume, i) => {
       if (volume === "Week") return;
@@ -336,12 +336,11 @@ class Pulse extends Component {
     });
 
     // Remove and redraw chart
-    // d3.select(window).on("resize", resizePulse);
     // Use addEventListener to avoid overriding the listener
-    window.addEventListener("resize", resizePulse);
+    window.addEventListener("resize", resizeControl);
 
-    function resizePulse() {
-      width = parseInt(d3.select("." + styles.pulse).style("width"), 10);
+    function resizeControl() {
+      width = parseInt(d3.select("." + styles.control).style("width"), 10);
       width = width - margin.left - margin.right;
 
       xScale = d3.scaleTime().range([0, width]);
@@ -358,26 +357,25 @@ class Pulse extends Component {
       // Direct resizing
       timeLine.attr("x2", width);
       timeLineRightBoundary.attr("x1", width).attr("x2", width);
-      timeLineTextLeft.style("left", width / 6.5 - 14 + "px")
+      timeLineTextLeft.style("left", width / 6.5 - 14 + "px");
       timeLineTextRight.style("right", width * 0.37 - 20 + "px");
       timeEventMarker
         .attr("x1", width * splitPoint)
         .attr("x2", width * splitPoint);
-      shootingGroup.attr(
-        "transform",
-        "translate(" + width * 0.48 + ", " + joyplotHeight * 0.55 + ")"
-      );
-      gunControlGroup 
-      .attr(
-        "transform",
-        "translate(" + width * 0.85 + ", " + joyplotHeight * 0.55 + ")"
-      );
+      // shootingGroup.attr(
+      //   "transform",
+      //   "translate(" + width * 0.48 + ", " + joyplotHeight * 0.55 + ")"
+      // );
+      // gunControlGroup.attr(
+      //   "transform",
+      //   "translate(" + width * 0.85 + ", " + joyplotHeight * 0.55 + ")"
+      // );
 
       d3.selectAll("." + styles.singlePlot).remove();
 
       searchInterest.attr(
         "transform",
-        "translate(" + (width * 0.33 - interestLineWidth / 2 + 4) + ", 0)"
+        "translate(" + (width * 0.255 - interestLineWidth / 2 + 4) + ", 0)"
       );
 
       dataFlat.columns.forEach((volume, i) => {
@@ -393,7 +391,6 @@ class Pulse extends Component {
 
         // Firefox and Opera render these lines 1px down so
         // if (firefox || opera) downPageLine--;
-
 
         svg
           .append("path")
@@ -433,10 +430,10 @@ class Pulse extends Component {
   render(props, state) {
     return (
       <div className={styles.root}>
-        <svg className={styles.pulse} />
+        <svg className={styles.control} />
       </div>
     );
   }
 }
 
-module.exports = Pulse;
+module.exports = Vegas;
