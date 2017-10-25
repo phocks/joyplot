@@ -2,6 +2,7 @@ const { h, Component } = require("preact");
 
 const Joyplot = require("./Joyplot");
 const Pulse = require("./Pulse");
+const Control = require("./Control")
 
 const styles = require("./App.scss");
 
@@ -15,25 +16,19 @@ const dataURLs = {
   control: interactiveElement.dataset.control
 };
 
-
-
 class App extends Component {
   render() {
     const { type } = this.props;
 
     switch (type) {
       case "joyplot":
-        return (
-          <Joyplot dataUrl={dataURLs.joyplot} />
-        );
+        return <Joyplot dataUrl={dataURLs.joyplot} />;
         break;
       case "stacked":
-        return (
-          <Pulse
-            dataURL={dataURLs.pulse}
-            dataURL2={dataURLs.control}
-          />
-        );
+        return <Pulse dataURL={dataURLs.pulse} dataURL2={dataURLs.control} />;
+        break;
+      case "control":
+        return <Control dataURL={dataURLs.pulse} dataURL2={dataURLs.control} />;
     }
   }
 }

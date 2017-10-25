@@ -2,12 +2,15 @@ const { h, render } = require("preact");
 
 const PROJECT_NAME = "joyplot";
 const root = document.querySelector(`[data-joyplot-root]`);
-const elemJoyplot = document.querySelector(`[name=joyplot]`);
-const elemStacked = document.querySelector(`[name=stacked]`);
+
+const elemJoyplot = document.querySelector("[name=joyplot]");
+const elemStacked = document.querySelector("[name=stacked]");
+const elemControl = document.querySelector("[name=control]");
 
 function init() {
   draw(elemJoyplot, "joyplot");
   draw(elemStacked, "stacked");
+  draw(elemControl, "control");
 }
 
 function draw(element, type) {

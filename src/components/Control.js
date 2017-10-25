@@ -1,8 +1,8 @@
 import { h, Component } from "preact";
-import * as styles from "./Pulse.scss";
+import * as styles from "./Control.scss";
 import * as d3 from "d3";
 
-class Pulse extends Component {
+class Control extends Component {
   constructor(props) {
     super(props);
 
@@ -21,10 +21,10 @@ class Pulse extends Component {
   createChart(error, dataFlat, gunControlData) {
     // Inital variables
     let margin = { top: 60, right: 5, bottom: 70, left: 5 },
-      width = parseInt(d3.select("." + styles.pulse).style("width"), 10),
-      joyplotHeight = 75,
+      width = parseInt(d3.select("." + styles.control).style("width"), 10),
+      joyplotHeight = 130,
       labelMargin = 110,
-      spacing = 54,
+      spacing = 100,
       totalPlots = dataFlat.columns.length - 1,
       height = (totalPlots - 1) * spacing + joyplotHeight,
       guideFill = "rgba(92, 108, 112, 0.5)",
@@ -96,7 +96,7 @@ class Pulse extends Component {
 
     // Draw the chart
     var svg = d3
-      .select("." + styles.pulse)
+      .select("." + styles.control)
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
       .append("g")
@@ -205,7 +205,7 @@ class Pulse extends Component {
       .append("g")
       .attr(
         "transform",
-        "translate(" + width * 0.48 + ", " + joyplotHeight * 0.55 + ")"
+        "translate(" + width * 0.49 + ", " + joyplotHeight * 0.6 + ")"
       );
 
     shootingGroup
@@ -230,7 +230,7 @@ class Pulse extends Component {
       .append("g")
       .attr(
         "transform",
-        "translate(" + width * 0.85 + ", " + joyplotHeight * 0.55 + ")"
+        "translate(" + width * 0.85 + ", " + joyplotHeight * 0.7 + ")"
       );
 
     var gunControlText = gunControlGroup
@@ -336,12 +336,11 @@ class Pulse extends Component {
     });
 
     // Remove and redraw chart
-    // d3.select(window).on("resize", resizePulse);
     // Use addEventListener to avoid overriding the listener
-    window.addEventListener("resize", resizePulse);
+    window.addEventListener("resize", resizeControl);
 
-    function resizePulse() {
-      width = parseInt(d3.select("." + styles.pulse).style("width"), 10);
+    function resizeControl() {
+      width = parseInt(d3.select("." + styles.control).style("width"), 10);
       width = width - margin.left - margin.right;
 
       xScale = d3.scaleTime().range([0, width]);
@@ -365,12 +364,12 @@ class Pulse extends Component {
         .attr("x2", width * splitPoint);
       shootingGroup.attr(
         "transform",
-        "translate(" + width * 0.48 + ", " + joyplotHeight * 0.55 + ")"
+        "translate(" + width * 0.49 + ", " + joyplotHeight * 0.6 + ")"
       );
       gunControlGroup 
       .attr(
         "transform",
-        "translate(" + width * 0.85 + ", " + joyplotHeight * 0.55 + ")"
+        "translate(" + width * 0.85 + ", " + joyplotHeight * 0.7 + ")"
       );
 
       d3.selectAll("." + styles.singlePlot).remove();
@@ -449,10 +448,10 @@ class Pulse extends Component {
   render(props, state) {
     return (
       <div className={styles.root}>
-        <svg className={styles.pulse} />
+        <svg className={styles.control} />
       </div>
     );
   }
 }
 
-module.exports = Pulse;
+module.exports = Control;
