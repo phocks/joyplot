@@ -137,17 +137,17 @@ class Vegas extends Component {
       .append("text")
       .attr("fill", guideTextFill)
       .attr("font-size", 11)
-      .attr("text-anchor", "end");
+      .attr("text-anchor", "start");
 
     searchInterestText
       .append("tspan")
       .text("100% search")
-      .attr("x", -5);
+      .attr("x", interestLineWidth + 5);
 
     searchInterestText
       .append("tspan")
       .text("interest")
-      .attr("x", -5)
+      .attr("x", interestLineWidth + 5)
       .attr("y", 13);
 
     // Time periods
