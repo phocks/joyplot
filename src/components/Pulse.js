@@ -198,6 +198,66 @@ class Pulse extends Component {
       .attr("fill", "none")
       .attr("shape-rendering", shapeRendering);
 
+    // Coloured pointers to area charts
+    let shootingGroupColor = "#007D99";
+
+    let shootingGroup = svg
+      .append("g")
+      .attr(
+        "transform",
+        "translate(" + width * 0.45 + ", " + joyplotHeight * 0.5 + ")"
+      );
+
+    shootingGroup
+      .append("text")
+      .attr("font-size", guideFontSize)
+      .attr("font-weight", "bold")
+      .text("SHOOTING")
+      .attr("fill", shootingGroupColor);
+
+    shootingGroup
+      .append("line")
+      .attr("x1", -2)
+      .attr("y1", 2)
+      .attr("x2", -10)
+      .attr("y2", 10)
+      .attr("stroke", shootingGroupColor);
+
+    // Gun control label text group
+    let gunControlGroupColor = "#C44B00";
+
+    let gunControlGroup = svg
+      .append("g")
+      .attr(
+        "transform",
+        "translate(" + width * 0.85 + ", " + joyplotHeight * 0.7 + ")"
+      );
+
+    var gunControlText = gunControlGroup
+      .append("text")
+      .attr("font-size", guideFontSize)
+      .attr("font-weight", "bold")
+      .attr("fill", gunControlGroupColor);
+
+    gunControlText
+      .append("tspan")
+      .text("GUN")
+      .attr("text-anchor", "middle");
+    gunControlText
+      .append("tspan")
+      .text("CONTROL")
+      .attr("x", 0)
+      .attr("y", guideFontSize)
+      .attr("text-anchor", "middle");
+
+    gunControlGroup
+      .append("line")
+      .attr("x1", 0)
+      .attr("y1", guideFontSize + 5)
+      .attr("x2", 0)
+      .attr("y2", guideFontSize + 15)
+      .attr("stroke", gunControlGroupColor);
+
     // Timeline text
     let timeLineTextLeft = div
       .append("span")
@@ -300,7 +360,13 @@ class Pulse extends Component {
       timeLineRightBoundary.attr("x1", width).attr("x2", width);
       timeLineTextLeft.style("left", width * 0.15 - 20 + "px");
       timeLineTextRight.style("right", width * 0.35 - 20 + "px");
-      timeEventMarker.attr("x1", width * splitPoint).attr("x2", width * splitPoint);
+      timeEventMarker
+        .attr("x1", width * splitPoint)
+        .attr("x2", width * splitPoint);
+      shootingGroup.attr(
+        "transform",
+        "translate(" + width * 0.45 + ", " + joyplotHeight * 0.5 + ")"
+      );
 
       d3.selectAll("." + styles.singlePlot).remove();
 

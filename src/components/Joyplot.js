@@ -90,7 +90,6 @@ class Joyplot extends Component {
 
     let firstWeek = dataFlat[0].Week,
       lastWeek = dataFlat[dataFlat.length-1].Week;
-    console.log(firstWeek, lastWeek);
 
     // Grab out containing div for DOM operations
     const div = d3.select("." + styles.root);
