@@ -2,6 +2,8 @@ import { h, Component } from "preact";
 import * as styles from "./Pulse.scss";
 import * as d3 from "d3";
 
+var resizePulse;
+
 class Pulse extends Component {
   constructor(props) {
     super(props);
@@ -338,9 +340,9 @@ class Pulse extends Component {
     // Remove and redraw chart
     // d3.select(window).on("resize", resizePulse);
     // Use addEventListener to avoid overriding the listener
-    window.addEventListener("resize", resizePulse);
+    
 
-    function resizePulse() {
+    resizePulse = () => {
       width = parseInt(d3.select("." + styles.pulse).style("width"), 10);
       width = width - margin.left - margin.right;
 
@@ -419,7 +421,8 @@ class Pulse extends Component {
           .attr("transform", "translate(0, " + downPage + ")")
           .attr("d", area);
       });
-    }
+    } // end resizePulse
+    window.addEventListener("resize", resizePulse);
   } // end createChart
 
   loadData() {
@@ -428,6 +431,10 @@ class Pulse extends Component {
       .defer(d3.csv, this.props.dataURL)
       .defer(d3.csv, this.props.dataURL2)
       .await(this.createChart);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", resizePulse);
   }
 
   render(props, state) {

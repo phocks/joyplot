@@ -2,6 +2,8 @@ import { h, Component } from "preact";
 import * as styles from "./Vegas.scss";
 import * as d3 from "d3";
 
+var resizeVegas;
+
 class Vegas extends Component {
   constructor(props) {
     super(props);
@@ -337,9 +339,9 @@ class Vegas extends Component {
 
     // Remove and redraw chart
     // Use addEventListener to avoid overriding the listener
-    window.addEventListener("resize", resizeControl);
+    
 
-    function resizeControl() {
+    resizeVegas = () => {
       width = parseInt(d3.select("." + styles.control).style("width"), 10);
       width = width - margin.left - margin.right;
 
@@ -417,7 +419,12 @@ class Vegas extends Component {
           .attr("d", area);
       });
     }
+    window.addEventListener("resize", resizeVegas);
   } // end createChart
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", resizeVegas);
+  }
 
   loadData() {
     d3

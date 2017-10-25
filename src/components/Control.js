@@ -2,6 +2,8 @@ import { h, Component } from "preact";
 import * as styles from "./Control.scss";
 import * as d3 from "d3";
 
+var resizeControl;
+
 class Control extends Component {
   constructor(props) {
     super(props);
@@ -77,8 +79,6 @@ class Control extends Component {
         e[d] = +e[d];
       });
     });
-
-   
 
     // Get the containing div for labels
     const div = d3.select("." + styles.root);
@@ -212,8 +212,6 @@ class Control extends Component {
     //   .attr("y2", 10)
     //   .attr("stroke", shootingGroupColor);
 
-   
-
     // Timeline text
     let timeLineTextLeft = div
       .append("span")
@@ -225,9 +223,9 @@ class Control extends Component {
       .style("font-size", guideFontSize + "px")
       .style("background-color", "#f9f9f9");
 
-      // Hacky way of detecting width of text
-      let textWidth = timeLineTextLeft.node().getBoundingClientRect().width;
-      timeLineTextLeft.style("left", width / 2 - textWidth / 2 + "px")
+    // Hacky way of detecting width of text
+    let textWidth = timeLineTextLeft.node().getBoundingClientRect().width;
+    timeLineTextLeft.style("left", width / 2 - textWidth / 2 + "px");
 
     // let timeLineTextRight = div
     //   .append("span")
@@ -277,15 +275,11 @@ class Control extends Component {
         .style("text-align", "left")
         .style("height", joyplotHeight + "px")
         .style("color", "#333");
-
-
     });
 
     // Remove and redraw chart
     // Use addEventListener to avoid overriding the listener
-    window.addEventListener("resize", resizeControl);
-
-    function resizeControl() {
+    resizeControl = () => {
       width = parseInt(d3.select("." + styles.control).style("width"), 10);
       width = width - margin.left - margin.right;
 
@@ -304,7 +298,7 @@ class Control extends Component {
       // Direct resizing
       timeLine.attr("x2", width);
       timeLineRightBoundary.attr("x1", width).attr("x2", width);
-      timeLineTextLeft.style("left", width * 0.5 - textWidth / 2 + "px")
+      timeLineTextLeft.style("left", width * 0.5 - textWidth / 2 + "px");
 
       // timeLineTextRight.style("right", width * 0.37 - 20 + "px");
       // timeEventMarker
@@ -364,8 +358,13 @@ class Control extends Component {
         //   .attr("transform", "translate(0, " + downPage + ")")
         //   .attr("d", area);
       });
-    }
+    };
+    window.addEventListener("resize", resizeControl);
   } // end createChart
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", resizeControl);
+  }
 
   loadData() {
     d3

@@ -1,7 +1,11 @@
 import { h, Component } from "preact";
 import * as styles from "./Joyplot.scss";
 import * as d3 from "d3";
-import { format } from 'date-fns'
+import { format } from "date-fns";
+
+// Making these event listener function file scope so they unmount
+// until I find a better way. Please help lol
+var resizeJoyplot;
 
 class Joyplot extends Component {
   constructor(props) {
@@ -41,14 +45,14 @@ class Joyplot extends Component {
     width = width - margin.left - margin.right;
 
     // Due to a weird Firefox bug we need to sniff user agent
-    var chrome = navigator.userAgent.indexOf("Chrome") > -1;
-    var explorer = navigator.userAgent.indexOf("MSIE") > -1;
-    var firefox = navigator.userAgent.indexOf("Firefox") > -1;
-    var safari = navigator.userAgent.indexOf("Safari") > -1;
-    var camino = navigator.userAgent.indexOf("Camino") > -1;
-    var opera = navigator.userAgent.toLowerCase().indexOf("op") > -1;
-    if (chrome && safari) safari = false;
-    if (chrome && opera) chrome = false;
+    // var chrome = navigator.userAgent.indexOf("Chrome") > -1;
+    // var explorer = navigator.userAgent.indexOf("MSIE") > -1;
+    // var firefox = navigator.userAgent.indexOf("Firefox") > -1;
+    // var safari = navigator.userAgent.indexOf("Safari") > -1;
+    // var camino = navigator.userAgent.indexOf("Camino") > -1;
+    // var opera = navigator.userAgent.toLowerCase().indexOf("op") > -1;
+    // if (chrome && safari) safari = false;
+    // if (chrome && opera) chrome = false;
 
     // Set up a date parser
     var parseDate = d3.timeParse("%d/%m/%y");
@@ -89,7 +93,7 @@ class Joyplot extends Component {
     });
 
     let firstWeek = dataFlat[0].Week,
-      lastWeek = dataFlat[dataFlat.length-1].Week;
+      lastWeek = dataFlat[dataFlat.length - 1].Week;
 
     // Grab out containing div for DOM operations
     const div = d3.select("." + styles.root);
@@ -100,7 +104,6 @@ class Joyplot extends Component {
       // .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
       .append("g")
-      
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     xScale.domain(
@@ -110,7 +113,7 @@ class Joyplot extends Component {
     );
 
     yScale.domain([
-      -1, // Keep the baseline
+      -0.5, // Keep the baseline
       d3.max(dataFlat, function(d) {
         // Or just set to 100
         return d["Sydney siege"];
@@ -192,7 +195,7 @@ class Joyplot extends Component {
     // Timeline text
     let timeLineTextLeft = div
       .append("span")
-      .text(format(firstWeek, 'MMM D, YYYY'))
+      .text(format(firstWeek, "MMM D, YYYY"))
       .style("position", "absolute")
       .style("top", timeLineYPos + margin.top - guideFontSize * 0.6 + "px")
       .style("left", labelMargin + width * 0.05 + "px")
@@ -202,7 +205,7 @@ class Joyplot extends Component {
 
     let timeLineTextRight = div
       .append("span")
-      .text(format(lastWeek, 'MMM D, YYYY'))
+      .text(format(lastWeek, "MMM D, YYYY"))
       .style("position", "absolute")
       .style("top", timeLineYPos + margin.top - guideFontSize * 0.6 + "px")
       .style("right", width * 0.05 + "px")
@@ -242,7 +245,7 @@ class Joyplot extends Component {
         .attr("stroke", joyplotFill)
         .attr("stroke-width", lineWidth + "px")
         .attr("fill", "none")
-        .attr("shape-rendering", shapeRendering)
+        // .attr("shape-rendering", shapeRendering)
         .attr("transform", "translate(0, " + downPageLine + ")");
 
       // Render the labels in a span to get text wrapping
@@ -268,11 +271,8 @@ class Joyplot extends Component {
     });
 
     // Remove and redraw chart
-    // d3.select(window).on("resize", resizeJoyplot);
-
-    window.addEventListener("resize", resizeJoyplot);
-
-    function resizeJoyplot() {
+      resizeJoyplot = () => {
+      
       width = parseInt(d3.select("." + styles.joyplot).style("width"), 10);
       width = width - margin.left - margin.right;
 
@@ -328,7 +328,9 @@ class Joyplot extends Component {
           .attr("shape-rendering", shapeRendering)
           .attr("transform", "translate(0, " + downPageLine + ")");
       });
-    }
+    };
+
+    window.addEventListener("resize", resizeJoyplot);
   }
 
   loadData() {
@@ -336,6 +338,10 @@ class Joyplot extends Component {
       .queue(2) // Load 2 files concurrently (if there are more than 1)
       .defer(d3.csv, this.props.dataUrl)
       .await(this.createChart);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", resizeJoyplot);
   }
 
   render(props, state) {
