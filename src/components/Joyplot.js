@@ -98,7 +98,7 @@ class Joyplot extends Component {
     var svg = d3
       .select("." + styles.joyplot)
       // .attr("width", width + margin.left + margin.right)
-      .style("height", height + margin.top + margin.bottom)
+      .attr("height", height + margin.top + margin.bottom)
       .append("g")
       
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");

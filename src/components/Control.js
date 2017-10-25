@@ -22,9 +22,9 @@ class Control extends Component {
     // Inital variables
     let margin = { top: 60, right: 5, bottom: 70, left: 5 },
       width = parseInt(d3.select("." + styles.control).style("width"), 10),
-      joyplotHeight = 130,
+      joyplotHeight = 75,
       labelMargin = 110,
-      spacing = 100,
+      spacing = 54,
       totalPlots = dataFlat.columns.length - 1,
       height = (totalPlots - 1) * spacing + joyplotHeight,
       guideFill = "rgba(92, 108, 112, 0.5)",
@@ -205,7 +205,7 @@ class Control extends Component {
       .append("g")
       .attr(
         "transform",
-        "translate(" + width * 0.49 + ", " + joyplotHeight * 0.6 + ")"
+        "translate(" + width * 0.48 + ", " + joyplotHeight * 0.55 + ")"
       );
 
     shootingGroup
@@ -230,7 +230,7 @@ class Control extends Component {
       .append("g")
       .attr(
         "transform",
-        "translate(" + width * 0.85 + ", " + joyplotHeight * 0.7 + ")"
+        "translate(" + width * 0.85 + ", " + joyplotHeight * 0.55 + ")"
       );
 
     var gunControlText = gunControlGroup
@@ -264,7 +264,7 @@ class Control extends Component {
       .text("1 week")
       .style("position", "absolute")
       .style("top", timeLineYPos + margin.top - guideFontSize * 0.6 + "px")
-      .style("left", width * 0.15 - 50 + "px")
+      .style("left", width * 0.185 - 20 + "px")
       .style("color", guideTextFill)
       .style("font-size", guideFontSize + "px")
       .style("background-color", "#f9f9f9");
@@ -274,7 +274,7 @@ class Control extends Component {
       .text("2 weeks")
       .style("position", "absolute")
       .style("top", timeLineYPos + margin.top - guideFontSize * 0.6 + "px")
-      .style("right", width * 0.35 - 20 + "px")
+      .style("right", width * 0.37 - 20 + "px")
       .style("color", guideTextFill)
       .style("font-size", guideFontSize + "px")
       .style("background-color", "#f9f9f9");
@@ -357,19 +357,18 @@ class Control extends Component {
       // Direct resizing
       timeLine.attr("x2", width);
       timeLineRightBoundary.attr("x1", width).attr("x2", width);
-      timeLineTextLeft.style("left", width * 0.15 - 20 + "px");
-      timeLineTextRight.style("right", width * 0.35 - 20 + "px");
+      timeLineTextLeft.style("left", width * 0.185 - 20 + "px");
+      timeLineTextRight.style("right", width * 0.37 - 20 + "px");
       timeEventMarker
         .attr("x1", width * splitPoint)
         .attr("x2", width * splitPoint);
       shootingGroup.attr(
         "transform",
-        "translate(" + width * 0.49 + ", " + joyplotHeight * 0.6 + ")"
+        "translate(" + width * 0.48 + ", " + joyplotHeight * 0.55 + ")"
       );
-      gunControlGroup 
-      .attr(
+      gunControlGroup.attr(
         "transform",
-        "translate(" + width * 0.85 + ", " + joyplotHeight * 0.7 + ")"
+        "translate(" + width * 0.85 + ", " + joyplotHeight * 0.55 + ")"
       );
 
       d3.selectAll("." + styles.singlePlot).remove();
@@ -393,23 +392,6 @@ class Control extends Component {
         // Firefox and Opera render these lines 1px down so
         // if (firefox || opera) downPageLine--;
 
-        // svg
-        //   .append("path")
-        //   .attr("class", styles.singlePlot)
-        //   .datum(dataFlat)
-        //   .attr("fill", "rgba(0, 125, 153, 0.6")
-        //   .attr("transform", "translate(0, " + downPage + ")")
-        //   .attr("d", area);
-
-        // svg
-        //   .append("path")
-        //   .attr("class", styles.singlePlot)
-        //   .attr("d", baseline)
-        //   .attr("stroke", joyplotFill)
-        //   .attr("stroke-width", lineWidth + "px")
-        //   .attr("fill", "none")
-        //   .attr("shape-rendering", shapeRendering)
-        //   .attr("transform", "translate(0, " + downPageLine + ")");
         svg
           .append("path")
           .classed(styles.singlePlot, true)

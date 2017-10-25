@@ -264,7 +264,7 @@ class Pulse extends Component {
       .text("1 week")
       .style("position", "absolute")
       .style("top", timeLineYPos + margin.top - guideFontSize * 0.6 + "px")
-      .style("left", width * 0.15 - 50 + "px")
+      .style("left", width * 0.185 - 20 + "px")
       .style("color", guideTextFill)
       .style("font-size", guideFontSize + "px")
       .style("background-color", "#f9f9f9");
@@ -274,7 +274,7 @@ class Pulse extends Component {
       .text("2 weeks")
       .style("position", "absolute")
       .style("top", timeLineYPos + margin.top - guideFontSize * 0.6 + "px")
-      .style("right", width * 0.35 - 20 + "px")
+      .style("right", width * 0.37 - 20 + "px")
       .style("color", guideTextFill)
       .style("font-size", guideFontSize + "px")
       .style("background-color", "#f9f9f9");
@@ -358,8 +358,8 @@ class Pulse extends Component {
       // Direct resizing
       timeLine.attr("x2", width);
       timeLineRightBoundary.attr("x1", width).attr("x2", width);
-      timeLineTextLeft.style("left", width * 0.15 - 20 + "px");
-      timeLineTextRight.style("right", width * 0.35 - 20 + "px");
+      timeLineTextLeft.style("left", width * 0.185 - 20 + "px");
+      timeLineTextRight.style("right", width * 0.37 - 20 + "px");
       timeEventMarker
         .attr("x1", width * splitPoint)
         .attr("x2", width * splitPoint);
