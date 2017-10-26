@@ -269,7 +269,8 @@ class Pulse extends Component {
       .style("left", width / 6.5 - 14 + "px")
       .style("color", guideTextFill)
       .style("font-size", guideFontSize + "px")
-      .style("background-color", "#f9f9f9");
+      .style("background-color", "#f9f9f9")
+      .style("padding", "0 4px 0 4px");
 
     let timeLineTextRight = div
       .append("span")
@@ -279,7 +280,8 @@ class Pulse extends Component {
       .style("right", width * 0.37 - 20 + "px")
       .style("color", guideTextFill)
       .style("font-size", guideFontSize + "px")
-      .style("background-color", "#f9f9f9");
+      .style("background-color", "#f9f9f9")
+      .style("padding", "0 4px 0 4px");
 
     dataFlat.columns.forEach((volume, i) => {
       if (volume === "Week") return;

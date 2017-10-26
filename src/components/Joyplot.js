@@ -201,7 +201,8 @@ class Joyplot extends Component {
       .style("left", labelMargin + width * 0.05 + "px")
       .style("color", guideTextFill)
       .style("font-size", guideFontSize + "px")
-      .style("background-color", "#f9f9f9");
+      .style("background-color", "#f9f9f9")
+      .style("padding", "0 4px 0 4px");
 
     let timeLineTextRight = div
       .append("span")
@@ -211,7 +212,8 @@ class Joyplot extends Component {
       .style("right", width * 0.05 + "px")
       .style("color", guideTextFill)
       .style("font-size", guideFontSize + "px")
-      .style("background-color", "#f9f9f9");
+      .style("background-color", "#f9f9f9")
+      .style("padding", "0 4px 0 4px");
 
     // Loop through data and plot the area chart
     dataFlat.columns.forEach((volume, i) => {

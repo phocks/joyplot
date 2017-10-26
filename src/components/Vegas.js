@@ -209,7 +209,8 @@ class Vegas extends Component {
       .style("left", width / 6 - 14 + "px") // overwritten later
       .style("color", guideTextFill)
       .style("font-size", guideFontSize + "px")
-      .style("background-color", "#f9f9f9");
+      .style("background-color", "#f9f9f9")
+      .style("padding", "0 4px 0 4px");
 
     // Hacky way of detecting width of text
     let textWidth = timeLineTextLeft.node().getBoundingClientRect().width;
@@ -223,7 +224,8 @@ class Vegas extends Component {
       .style("right", width * 0.4 - 20 + "px")
       .style("color", guideTextFill)
       .style("font-size", guideFontSize + "px")
-      .style("background-color", "#f9f9f9");
+      .style("background-color", "#f9f9f9")
+      .style("padding", "0 4px 0 4px");
 
       // Hacky way of detecting width of text
     let textWidth2 = timeLineTextRight.node().getBoundingClientRect().width;

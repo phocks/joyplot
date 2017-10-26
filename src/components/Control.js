@@ -221,7 +221,8 @@ class Control extends Component {
       .style("left", width / 2 + "px")
       .style("color", guideTextFill)
       .style("font-size", guideFontSize + "px")
-      .style("background-color", "#f9f9f9");
+      .style("background-color", "#f9f9f9")
+      .style("padding", "0 4px 0 4px");
 
     // Hacky way of detecting width of text
     let textWidth = timeLineTextLeft.node().getBoundingClientRect().width;
@@ -235,7 +236,8 @@ class Control extends Component {
     //   .style("right", width * 0.37 - 20 + "px")
     //   .style("color", guideTextFill)
     //   .style("font-size", guideFontSize + "px")
-    //   .style("background-color", "#f9f9f9");
+    //   .style("background-color", "#f9f9f9")
+    // .style("padding", "0 4px 0 4px");
 
     dataFlat.columns.forEach((volume, i) => {
       if (volume === "Month") return;
