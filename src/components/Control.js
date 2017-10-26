@@ -215,29 +215,25 @@ class Control extends Component {
     // Timeline text
     let timeLineTextLeft = div
       .append("span")
-      .text("2007 - 2017")
+      .text("2007")
       .style("position", "absolute")
       .style("top", timeLineYPos + margin.top - guideFontSize * 0.6 + "px")
-      .style("left", width / 2 + "px")
+      .style("left", width * 0.1 + "px")
       .style("color", guideTextFill)
       .style("font-size", guideFontSize + "px")
       .style("background-color", "#f9f9f9")
       .style("padding", "0 4px 0 4px");
 
-    // Hacky way of detecting width of text
-    let textWidth = timeLineTextLeft.node().getBoundingClientRect().width;
-    timeLineTextLeft.style("left", width / 2 - textWidth / 2 + "px");
-
-    // let timeLineTextRight = div
-    //   .append("span")
-    //   .text("2 weeks")
-    //   .style("position", "absolute")
-    //   .style("top", timeLineYPos + margin.top - guideFontSize * 0.6 + "px")
-    //   .style("right", width * 0.37 - 20 + "px")
-    //   .style("color", guideTextFill)
-    //   .style("font-size", guideFontSize + "px")
-    //   .style("background-color", "#f9f9f9")
-    // .style("padding", "0 4px 0 4px");
+    let timeLineTextRight = div
+      .append("span")
+      .text("2017")
+      .style("position", "absolute")
+      .style("top", timeLineYPos + margin.top - guideFontSize * 0.6 + "px")
+      .style("right", width * 0.1 + "px")
+      .style("color", guideTextFill)
+      .style("font-size", guideFontSize + "px")
+      .style("background-color", "#f9f9f9")
+      .style("padding", "0 4px 0 4px");
 
     dataFlat.columns.forEach((volume, i) => {
       if (volume === "Month") return;
@@ -296,11 +292,11 @@ class Control extends Component {
       // baselineData = [[0, 0], [labelMargin - 5, 0]];
       // baseline = lineGenerator(baselineData);
 
-      textWidth = timeLineTextLeft.node().getBoundingClientRect().width;
       // Direct resizing
       timeLine.attr("x2", width);
       timeLineRightBoundary.attr("x1", width).attr("x2", width);
-      timeLineTextLeft.style("left", width * 0.5 - textWidth / 2 + "px");
+      timeLineTextLeft.style("left", width * 0.1 + "px");
+      timeLineTextRight.style("right", width * 0.1 + "px");
 
       // timeLineTextRight.style("right", width * 0.37 - 20 + "px");
       // timeEventMarker
