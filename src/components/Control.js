@@ -28,7 +28,7 @@ class Control extends Component {
       labelMargin = 110,
       spacing = 200,
       totalPlots = dataFlat.columns.length - 1,
-      height = (totalPlots - 1) * spacing + joyplotHeight,
+      height = (totalPlots - 2) * spacing + joyplotHeight,
       guideFill = "rgba(92, 108, 112, 0.5)",
       guideTextFill = "rgba(92, 108, 122, 1.0)",
       lineWidth = 1,
@@ -75,7 +75,7 @@ class Control extends Component {
     // Convert the number strings to integers
     dataFlat.columns.forEach(d => {
       dataFlat.forEach(e => {
-        if (d === "Month") return;
+        if (d === "Month" || d === "Event") return;
         e[d] = +e[d];
       });
     });
@@ -187,30 +187,30 @@ class Control extends Component {
     //   .attr("fill", "none")
     //   .attr("shape-rendering", shapeRendering);
 
-    // Coloured pointers to area charts
-    // let shootingGroupColor = "#007D99";
+    // Annotations of different peaks
+    let annotationColor = "#007D99";
 
-    // let shootingGroup = svg
-    //   .append("g")
-    //   .attr(
-    //     "transform",
-    //     "translate(" + width * 0.48 + ", " + joyplotHeight * 0.55 + ")"
-    //   );
+    let shootingGroup = svg
+      .append("g")
+      .attr(
+        "transform",
+        "translate(" + width * 0.04 + ", " + joyplotHeight * 0.7 + ")"
+      );
 
-    // shootingGroup
-    //   .append("text")
-    //   .attr("font-size", guideFontSize)
-    //   .attr("font-weight", "bold")
-    //   .text("SHOOTING")
-    //   .attr("fill", shootingGroupColor);
+    shootingGroup
+      .append("text")
+      .attr("font-size", guideFontSize)
+      .attr("font-weight", "bold")
+      .text("Virginia tech")
+      .attr("fill", annotationColor);
 
-    // shootingGroup
-    //   .append("line")
-    //   .attr("x1", -2)
-    //   .attr("y1", 2)
-    //   .attr("x2", -10)
-    //   .attr("y2", 10)
-    //   .attr("stroke", shootingGroupColor);
+    shootingGroup
+      .append("line")
+      .attr("x1", -2)
+      .attr("y1", 2)
+      .attr("x2", -10)
+      .attr("y2", 10)
+      .attr("stroke", annotationColor);
 
     // Timeline text
     let timeLineTextLeft = div
@@ -218,7 +218,7 @@ class Control extends Component {
       .text("2007")
       .style("position", "absolute")
       .style("top", timeLineYPos + margin.top - guideFontSize * 0.6 + "px")
-      .style("left", width * 0.1 + "px")
+      .style("left", width * 0.1 + 10 + "px")
       .style("color", guideTextFill)
       .style("font-size", guideFontSize + "px")
       .style("background-color", "#f9f9f9")
@@ -229,14 +229,14 @@ class Control extends Component {
       .text("2017")
       .style("position", "absolute")
       .style("top", timeLineYPos + margin.top - guideFontSize * 0.6 + "px")
-      .style("right", width * 0.1 + "px")
+      .style("right", width * 0.1 + 10 + "px")
       .style("color", guideTextFill)
       .style("font-size", guideFontSize + "px")
       .style("background-color", "#f9f9f9")
       .style("padding", "0 4px 0 4px");
 
     dataFlat.columns.forEach((volume, i) => {
-      if (volume === "Month") return;
+      if (volume === "Month" || volume === "Event") return;
 
       area.y1(d => {
         return yScale(d[volume]);
@@ -259,7 +259,7 @@ class Control extends Component {
         .append("span")
         .classed(styles.labels, true)
         .style("width", labelMargin - 10 + "px")
-        .style("top", downPageText + "px")
+        .style("top", downPageText - 20 + "px")
         .style("left", margin.left + "px")
         .style("position", "absolute");
 
@@ -295,8 +295,8 @@ class Control extends Component {
       // Direct resizing
       timeLine.attr("x2", width);
       timeLineRightBoundary.attr("x1", width).attr("x2", width);
-      timeLineTextLeft.style("left", width * 0.1 + "px");
-      timeLineTextRight.style("right", width * 0.1 + "px");
+      timeLineTextLeft.style("left", width * 0.1 + 10 + "px");
+      timeLineTextRight.style("right", width * 0.1 + 10 + "px");
 
       // timeLineTextRight.style("right", width * 0.37 - 20 + "px");
       // timeEventMarker
@@ -319,7 +319,7 @@ class Control extends Component {
       // );
 
       dataFlat.columns.forEach((volume, i) => {
-        if (volume === "Month") return;
+        if (volume === "Month" || volume === "Event") return;
 
         area.y1(d => {
           return yScale(d[volume]);

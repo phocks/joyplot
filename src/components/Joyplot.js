@@ -28,7 +28,7 @@ class Joyplot extends Component {
     let margin = { top: 60, right: 15, bottom: 70, left: 15 },
       width = parseInt(d3.select("." + styles.joyplot).style("width"), 10),
       joyplotHeight = 76,
-      labelMargin = 105,
+      labelMargin = 120,
       spacing = 52,
       totalPlots = dataFlat.columns.length - 1,
       height = (totalPlots - 1) * spacing + joyplotHeight,
@@ -58,7 +58,7 @@ class Joyplot extends Component {
     var parseDate = d3.timeParse("%d/%m/%y");
 
     // set the range scales
-    var xScale = d3.scaleTime().range([labelMargin, width]);
+    var xScale = d3.scaleTime().range([0, width]);
     var yScale = d3.scaleLinear().range([joyplotHeight, 0]);
 
     // define the chart area
@@ -113,7 +113,7 @@ class Joyplot extends Component {
     );
 
     yScale.domain([
-      -0.5, // Keep the baseline
+      -0.6, // Keep the baseline
       d3.max(dataFlat, function(d) {
         // Or just set to 100
         return d["Sydney siege"];
@@ -126,7 +126,7 @@ class Joyplot extends Component {
       .append("g")
       .attr(
         "transform",
-        "translate(" + (labelMargin - interestLineWidth / 2 + 4) + ", 0)"
+        "translate(" + (width * 0.15 - interestLineWidth / 2 + 4) + ", 0)"
       );
 
     searchInterest
@@ -140,26 +140,26 @@ class Joyplot extends Component {
     const searchInterestText = searchInterest
       .append("text")
       .attr("fill", guideTextFill)
-      .attr("font-size", guideFontSize)
-      .attr("text-anchor", "end");
+      .attr("font-size", guideFontSize);
+    // .attr("text-anchor", "end");
 
     searchInterestText
       .append("tspan")
       .text("100% search")
-      .attr("x", -5);
+      .attr("x", interestLineWidth + 5);
 
     searchInterestText
       .append("tspan")
       .text("interest")
-      .attr("x", -5)
+      .attr("x", interestLineWidth + 5)
       .attr("y", 13);
 
     // Time periods
-    let timeLineYPos = joyplotHeight * 0.4;
+    let timeLineYPos = -25; // joyplotHeight * 0.4;
 
     let timeLine = svg
       .append("line")
-      .attr("x1", labelMargin)
+      .attr("x1", 0)
       .attr("y1", timeLineYPos)
       .attr("x2", width)
       .attr("y2", timeLineYPos)
@@ -171,9 +171,9 @@ class Joyplot extends Component {
     // Left boundary line
     svg
       .append("line")
-      .attr("x1", labelMargin)
+      .attr("x1", 0)
       .attr("y1", timeLineYPos - 5.5)
-      .attr("x2", labelMargin)
+      .attr("x2", 0)
       .attr("y2", timeLineYPos + 5.5)
       .attr("stroke", guideFill)
       .attr("stroke-width", lineWidth + "px")
@@ -198,7 +198,7 @@ class Joyplot extends Component {
       .text(format(firstWeek, "MMM D, YYYY"))
       .style("position", "absolute")
       .style("top", timeLineYPos + margin.top - guideFontSize * 0.6 + "px")
-      .style("left", labelMargin + width * 0.05 + "px")
+      .style("left", width * 0.05 + 10 + "px")
       .style("color", guideTextFill)
       .style("font-size", guideFontSize + "px")
       .style("background-color", "#f9f9f9")
@@ -209,7 +209,7 @@ class Joyplot extends Component {
       .text(format(lastWeek, "MMM D, YYYY"))
       .style("position", "absolute")
       .style("top", timeLineYPos + margin.top - guideFontSize * 0.6 + "px")
-      .style("right", width * 0.05 + "px")
+      .style("right", width * 0.05 + 10 + "px")
       .style("color", guideTextFill)
       .style("font-size", guideFontSize + "px")
       .style("background-color", "#f9f9f9")
@@ -240,15 +240,15 @@ class Joyplot extends Component {
         .attr("d", area);
 
       // Draw a baseline
-      svg
-        .append("path")
-        .attr("class", styles.singlePlot)
-        .attr("d", baseline)
-        .attr("stroke", joyplotFill)
-        .attr("stroke-width", lineWidth + "px")
-        .attr("fill", "none")
-        // .attr("shape-rendering", shapeRendering)
-        .attr("transform", "translate(0, " + downPageLine + ")");
+      // svg
+      //   .append("path")
+      //   .attr("class", styles.singlePlot)
+      //   .attr("d", baseline)
+      //   .attr("stroke", joyplotFill)
+      //   .attr("stroke-width", lineWidth + "px")
+      //   .attr("fill", "none")
+      //   // .attr("shape-rendering", shapeRendering)
+      //   .attr("transform", "translate(0, " + downPageLine + ")");
 
       // Render the labels in a span to get text wrapping
       // We put it in a table-cell to achieve bottom aligning
@@ -273,13 +273,12 @@ class Joyplot extends Component {
     });
 
     // Remove and redraw chart
-      resizeJoyplot = () => {
-      
+    resizeJoyplot = () => {
       width = parseInt(d3.select("." + styles.joyplot).style("width"), 10);
       width = width - margin.left - margin.right;
 
       // Update properties with new widths
-      xScale = d3.scaleTime().range([labelMargin, width]);
+      xScale = d3.scaleTime().range([0, width]);
 
       xScale.domain(
         d3.extent(dataFlat, function(d) {
@@ -293,8 +292,13 @@ class Joyplot extends Component {
       // Direct element manipulation first
       timeLine.attr("x2", width);
       timeLineRightBoundary.attr("x1", width).attr("x2", width);
-      timeLineTextLeft.style("left", labelMargin + width * 0.05 + "px");
-      timeLineTextRight.style("right", width * 0.05 + "px");
+      timeLineTextLeft.style("left", width * 0.05 + 10 + "px");
+      timeLineTextRight.style("right", width * 0.05 + 10 + "px");
+
+      searchInterest.attr(
+        "transform",
+        "translate(" + (width * 0.15 - interestLineWidth / 2 + 4) + ", 0)"
+      );
 
       d3.selectAll("." + styles.singlePlot).remove();
 
@@ -320,15 +324,15 @@ class Joyplot extends Component {
           .attr("transform", "translate(0, " + downPage + ")")
           .attr("d", area);
 
-        svg
-          .append("path")
-          .attr("class", styles.singlePlot)
-          .attr("d", baseline)
-          .attr("stroke", joyplotFill)
-          .attr("stroke-width", lineWidth + "px")
-          .attr("fill", "none")
-          .attr("shape-rendering", shapeRendering)
-          .attr("transform", "translate(0, " + downPageLine + ")");
+        // svg
+        //   .append("path")
+        //   .attr("class", styles.singlePlot)
+        //   .attr("d", baseline)
+        //   .attr("stroke", joyplotFill)
+        //   .attr("stroke-width", lineWidth + "px")
+        //   .attr("fill", "none")
+        //   .attr("shape-rendering", shapeRendering)
+        //   .attr("transform", "translate(0, " + downPageLine + ")");
       });
     };
 
