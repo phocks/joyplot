@@ -22,7 +22,7 @@ class Control extends Component {
 
   createChart(error, dataFlat) {
     // Inital variables
-    let margin = { top: 60, right: 5, bottom: 70, left: 5 },
+    let margin = { top: 60, right: 15, bottom: 70, left: 15 },
       width = parseInt(d3.select("." + styles.control).style("width"), 10),
       joyplotHeight = 256,
       labelMargin = 110,
