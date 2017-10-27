@@ -305,7 +305,7 @@ class Vegas extends Component {
       });
 
       let downPage = (i - 1) * spacing;
-      let downPageText = spacing * (i - 1) + margin.top - 4;
+      let downPageText = spacing * (i - 1) + margin.top - 2;
 
       svg
         .append("path")

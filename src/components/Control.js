@@ -195,13 +195,14 @@ class Control extends Component {
 
     function annotate(object, i) {
       if (object.Event === "" || object.Hidden === "TRUE") return;
-      console.log(
-        object.Event,
-        object["Gun control searches"],
-        object.Month,
-        xScale(object.Month),
-        object.Alignment
-      );
+
+      // console.log(
+      //   object.Event,
+      //   object["Gun control searches"],
+      //   object.Month,
+      //   xScale(object.Month),
+      //   object.Alignment
+      // );
 
       let annotationLineSize = 5;
 
@@ -256,53 +257,12 @@ class Control extends Component {
 
         annotationLine.attr("x2", 0).attr("y2", -annotationLineSize * 1.9);
       }
+
+      if (object.Mobile === "hidden" && width < 500) {
+        annotation.style("display", "none");
+      }
     }
 
-    // // Virginia tech
-    // let virginiaTech = svg
-    //   .append("g")
-    //   .attr(
-    //     "transform",
-    //     "translate(" + width * 0.04 + ", " + joyplotHeight * 0.7 + ")"
-    //   );
-
-    // virginiaTech
-    //   .append("text")
-    //   .attr("font-size", guideFontSize)
-    //   .attr("font-weight", "bold")
-    //   .text("Virginia tech")
-    //   .attr("fill", annotationColor);
-
-    // virginiaTech
-    //   .append("line")
-    //   .attr("x1", -2)
-    //   .attr("y1", 2)
-    //   .attr("x2", -10)
-    //   .attr("y2", 10)
-    //   .attr("stroke", annotationColor);
-
-    // //
-    // let supremeCourt = svg
-    //   .append("g")
-    //   .attr(
-    //     "transform",
-    //     "translate(" + width * 0.13 + ", " + joyplotHeight * 0.8 + ")"
-    //   );
-
-    // supremeCourt
-    //   .append("text")
-    //   .attr("font-size", guideFontSize)
-    //   .attr("font-weight", "bold")
-    //   .text("Supreme Court handgun ban case")
-    //   .attr("fill", annotationColor);
-
-    // supremeCourt
-    //   .append("line")
-    //   .attr("x1", -2)
-    //   .attr("y1", 2)
-    //   .attr("x2", -10)
-    //   .attr("y2", 10)
-    //   .attr("stroke", annotationColor);
 
     // Timeline text
     let timeLineTextLeft = div
