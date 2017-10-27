@@ -25,7 +25,8 @@ class Pulse extends Component {
     let margin = { top: 60, right: 15, bottom: 60, left: 15 },
       width = parseInt(d3.select("." + styles.pulse).style("width"), 10),
       joyplotHeight = 75,
-      labelMargin = 110,
+      splitPoint = 0.288,
+      labelMargin = width * splitPoint,
       spacing = 54,
       totalPlots = dataFlat.columns.length - 1,
       height = (totalPlots - 1) * spacing + joyplotHeight,
@@ -36,8 +37,7 @@ class Pulse extends Component {
       interestLineWidth = 50,
       fontSize = 15,
       guideFontSize = 11,
-      maxSearchIndex = 100,
-      splitPoint = 0.288;
+      maxSearchIndex = 100;
 
     // We are using Mike Bostock's margin conventions https://bl.ocks.org/mbostock/3019563
     width = width - margin.left - margin.right;
@@ -305,7 +305,7 @@ class Pulse extends Component {
       });
 
       let downPage = (i - 1) * spacing;
-      let downPageText = spacing * (i - 1) + margin.top - 4;
+      let downPageText = spacing * (i - 1) + margin.top - 2;
 
       svg
         .append("path")
@@ -394,6 +394,10 @@ class Pulse extends Component {
         "transform",
         "translate(" + width * 0.85 + ", " + joyplotHeight * 0.55 + ")"
       );
+
+      // Selection based resizing
+      labelMargin = width * splitPoint;
+      d3.selectAll("." + styles.labels).style("width", labelMargin - 10 + "px");
 
       d3.selectAll("." + styles.singlePlot).remove();
 

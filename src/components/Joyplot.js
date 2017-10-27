@@ -28,7 +28,7 @@ class Joyplot extends Component {
     let margin = { top: 60, right: 15, bottom: 60, left: 15 },
       width = parseInt(d3.select("." + styles.joyplot).style("width"), 10),
       joyplotHeight = 76,
-      labelMargin = 120,
+      labelMargin = width * 0.3,
       spacing = 52,
       totalPlots = dataFlat.columns.length - 1,
       height = (totalPlots - 1) * spacing + joyplotHeight,
@@ -224,7 +224,7 @@ class Joyplot extends Component {
       });
 
       let downPage = spacing * (i - 1);
-      let downPageText = spacing * (i - 1) + margin.top - 4;
+      let downPageText = spacing * (i - 1) + margin.top - 2;
       let downPageLine = spacing * (i - 1) + joyplotHeight;
 
       // Firefox and Opera render these lines 1px down so
@@ -299,6 +299,10 @@ class Joyplot extends Component {
         "transform",
         "translate(" + (width * 0.15 - interestLineWidth / 2 + 4) + ", 0)"
       );
+
+      // SelectAll manipulation
+      labelMargin = width * 0.3;
+      d3.selectAll("." + styles.labels).style("width", labelMargin - 10 + "px");
 
       d3.selectAll("." + styles.singlePlot).remove();
 

@@ -237,66 +237,6 @@ class Vegas extends Component {
       width * 0.4 - textWidth2 * 0.5 + margin.right + "px"
     );
 
-    // Coloured pointers to area charts
-    // let shootingGroupColor = "#007D99";
-
-    // let shootingGroup = svg
-    //   .append("g")
-    //   .attr(
-    //     "transform",
-    //     "translate(" + width * 0.48 + ", " + joyplotHeight * 0.55 + ")"
-    //   );
-
-    // shootingGroup
-    //   .append("text")
-    //   .attr("font-size", guideFontSize)
-    //   .attr("font-weight", "bold")
-    //   .text("SHOOTING")
-    //   .attr("fill", shootingGroupColor);
-
-    // shootingGroup
-    //   .append("line")
-    //   .attr("x1", -2)
-    //   .attr("y1", 2)
-    //   .attr("x2", -10)
-    //   .attr("y2", 10)
-    //   .attr("stroke", shootingGroupColor);
-
-    // Gun control label text group
-    // let gunControlGroupColor = "#C44B00";
-
-    // let gunControlGroup = svg
-    //   .append("g")
-    //   .attr(
-    //     "transform",
-    //     "translate(" + width * 0.85 + ", " + joyplotHeight * 0.55 + ")"
-    //   );
-
-    // var gunControlText = gunControlGroup
-    //   .append("text")
-    //   .attr("font-size", guideFontSize)
-    //   .attr("font-weight", "bold")
-    //   .attr("fill", gunControlGroupColor);
-
-    // gunControlText
-    //   .append("tspan")
-    //   .text("GUN")
-    //   .attr("text-anchor", "middle");
-    // gunControlText
-    //   .append("tspan")
-    //   .text("CONTROL")
-    //   .attr("x", 0)
-    //   .attr("y", guideFontSize)
-    //   .attr("text-anchor", "middle");
-
-    // gunControlGroup
-    //   .append("line")
-    //   .attr("x1", 0)
-    //   .attr("y1", guideFontSize + 5)
-    //   .attr("x2", 0)
-    //   .attr("y2", guideFontSize + 15)
-    //   .attr("stroke", gunControlGroupColor);
-
     dataFlat.columns.forEach((volume, i) => {
       if (volume === "Week") return;
 
@@ -336,6 +276,17 @@ class Vegas extends Component {
         .style("height", joyplotHeight + "px")
         .style("color", "#333");
 
+      // Resize labels on mobile
+      if (width < 500) {
+        d3
+          .selectAll("." + styles.labels + " div")
+          .style("font-size", fontSize - 1 + "px");
+      } else {
+        d3
+          .selectAll("." + styles.labels + " div")
+          .style("font-size", fontSize + "px");
+      }
+
       // Try to render gun control in same forEach loop
       // rather than it's own loop to avoid overpaint
       let gunControlVolumeLabel = gunControlData.columns[i];
@@ -368,8 +319,6 @@ class Vegas extends Component {
         })
       );
 
-      // baselineData = [[0, 0], [labelMargin - 5, 0]];
-      // baseline = lineGenerator(baselineData);
 
       // Direct resizing
       timeLine.attr("x2", width);
@@ -385,11 +334,22 @@ class Vegas extends Component {
       timeEventMarker
         .attr("x1", width * splitPoint)
         .attr("x2", width * splitPoint);
-        
-        // Label resizing
+
+      // Label resizing
       labelMargin = width * splitPoint;
 
-      d3.selectAll("." + styles.labels).style("width", labelMargin - 10 + "px")
+      d3.selectAll("." + styles.labels).style("width", labelMargin - 10 + "px");
+
+      // Resize labels on mobile
+      if (width < 500) {
+        d3
+          .selectAll("." + styles.labels + " div")
+          .style("font-size", fontSize - 1 + "px");
+      } else {
+        d3
+          .selectAll("." + styles.labels + " div")
+          .style("font-size", fontSize + "px");
+      }
 
       d3.selectAll("." + styles.singlePlot).remove();
 

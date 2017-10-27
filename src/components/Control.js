@@ -25,7 +25,7 @@ class Control extends Component {
     let margin = { top: 60, right: 15, bottom: 60, left: 15 },
       width = parseInt(d3.select("." + styles.control).style("width"), 10),
       joyplotHeight = 256,
-      labelMargin = 110,
+      labelMargin = width * (1/2),
       spacing = 200,
       totalPlots = dataFlat.columns.length - 1,
       height = joyplotHeight, // (totalPlots - 3) * spacing + joyplotHeight,
@@ -295,7 +295,7 @@ class Control extends Component {
       });
 
       let downPage = (i - 1) * spacing;
-      let downPageText = spacing * (i - 1) + margin.top - 4;
+      let downPageText = spacing * (i - 1) + margin.top - 2;
 
       svg
         .append("path")
@@ -349,6 +349,12 @@ class Control extends Component {
       timeLineRightBoundary.attr("x1", width).attr("x2", width);
       timeLineTextLeft.style("left", width * 0.1 + margin.left + "px");
       timeLineTextRight.style("right", width * 0.1 + margin.right + "px");
+
+      // Selection based resizing
+
+      // Resize the labels 
+      labelMargin = width * (1/2),
+      d3.selectAll("." + styles.labels).style("width", labelMargin - 10 + "px");
 
       // Remove all loop-through items so we can replace later
       d3.selectAll("." + styles.singlePlot).remove();
