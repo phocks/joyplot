@@ -28,7 +28,8 @@ class Joyplot extends Component {
     let margin = { top: 60, right: 15, bottom: 60, left: 15 },
       width = parseInt(d3.select("." + styles.joyplot).style("width"), 10),
       joyplotHeight = 76,
-      labelMargin = width * 0.3,
+      splitPoint = 0.2,
+      labelMargin = width * splitPoint,
       spacing = 52,
       totalPlots = dataFlat.columns.length - 1,
       height = (totalPlots - 1) * spacing + joyplotHeight,
@@ -301,7 +302,7 @@ class Joyplot extends Component {
       );
 
       // SelectAll manipulation
-      labelMargin = width * 0.3;
+      labelMargin = width * splitPoint;
       d3.selectAll("." + styles.labels).style("width", labelMargin - 10 + "px");
 
       d3.selectAll("." + styles.singlePlot).remove();
