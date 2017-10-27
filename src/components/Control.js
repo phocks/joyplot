@@ -191,7 +191,9 @@ class Control extends Component {
     console.log(dataFlat);
     let annotationColor = "#007D99";
 
-    dataFlat.forEach((object, i) => {
+    dataFlat.forEach(annotate);
+
+    function annotate(object, i) {
       if (object.Event === "" || object.Hidden === "TRUE") return;
       console.log(
         object.Event,
@@ -244,19 +246,17 @@ class Control extends Component {
         annotationLine
           .attr("x2", -annotationLineSize)
           .attr("y2", -annotationLineSize);
-      } 
+      }
 
       if (object.Alignment === "center") {
         annotationText
-        .attr("text-anchor", "middle")
-        .attr("x", 0)
-        .attr("y", -annotationLineSize * 1.9 - 3);
+          .attr("text-anchor", "middle")
+          .attr("x", 0)
+          .attr("y", -annotationLineSize * 1.9 - 3);
 
-      annotationLine
-        .attr("x2", 0)
-        .attr("y2", -annotationLineSize * 1.9);
+        annotationLine.attr("x2", 0).attr("y2", -annotationLineSize * 1.9);
       }
-    });
+    }
 
     // // Virginia tech
     // let virginiaTech = svg
@@ -390,21 +390,9 @@ class Control extends Component {
       timeLineTextLeft.style("left", width * 0.1 + 10 + "px");
       timeLineTextRight.style("right", width * 0.1 + 10 + "px");
 
-      // timeLineTextRight.style("right", width * 0.37 - 20 + "px");
-      // timeEventMarker
-      //   .attr("x1", width * splitPoint)
-      //   .attr("x2", width * splitPoint);
-      // shootingGroup.attr(
-      //   "transform",
-      //   "translate(" + width * 0.48 + ", " + joyplotHeight * 0.55 + ")"
-      // );
-      // gunControlGroup.attr(
-      //   "transform",
-      //   "translate(" + width * 0.85 + ", " + joyplotHeight * 0.55 + ")"
-      // );
+      
 
       // Remove all loop-through items so we can replace later
-      console.log(styles);
       d3.selectAll("." + styles.singlePlot).remove();
       d3.selectAll("." + styles.annotation).remove();
 
@@ -421,7 +409,7 @@ class Control extends Component {
         });
 
         let downPage = spacing * (i - 1);
-        let downPageLine = spacing * (i - 1) + joyplotHeight;
+        // let downPageLine = spacing * (i - 1) + joyplotHeight;
         let downPageText = spacing * (i - 1) + 95;
 
         // Firefox and Opera render these lines 1px down so
@@ -434,23 +422,10 @@ class Control extends Component {
           .attr("fill", shootingColor)
           .attr("transform", "translate(0, " + downPage + ")")
           .attr("d", area);
-
-        // Try to render gun control in same forEach loop
-        // rather than it's own loop to avoid overpaint
-        // let gunControlVolumeLabel = gunControlData.columns[i];
-
-        // area.y1(d => {
-        //   return yScale(d[gunControlVolumeLabel]);
-        // });
-
-        // svg
-        //   .append("path")
-        //   .classed(styles.singlePlot, true)
-        //   .datum(gunControlData)
-        //   .attr("fill", gunControlColor)
-        //   .attr("transform", "translate(0, " + downPage + ")")
-        //   .attr("d", area);
       });
+
+      // Re-annotate on resize
+      dataFlat.forEach(annotate)
     };
     window.addEventListener("resize", resizeControl);
   } // end createChart
