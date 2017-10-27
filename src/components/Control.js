@@ -28,7 +28,7 @@ class Control extends Component {
       labelMargin = 110,
       spacing = 200,
       totalPlots = dataFlat.columns.length - 1,
-      height = (totalPlots - 2) * spacing + joyplotHeight,
+      height = (totalPlots - 3) * spacing + joyplotHeight,
       guideFill = "rgba(92, 108, 112, 0.5)",
       guideTextFill = "rgba(92, 108, 122, 1.0)",
       lineWidth = 1,
@@ -75,7 +75,7 @@ class Control extends Component {
     // Convert the number strings to integers
     dataFlat.columns.forEach(d => {
       dataFlat.forEach(e => {
-        if (d === "Month" || d === "Event") return;
+        if (d !== "Gun control searches") return;
         e[d] = +e[d];
       });
     });
@@ -187,30 +187,94 @@ class Control extends Component {
     //   .attr("fill", "none")
     //   .attr("shape-rendering", shapeRendering);
 
-    // Annotations of different peaks
+    // Annotations of different peaks we are doing this bespoke for now unfortunately
+    console.log(dataFlat);
     let annotationColor = "#007D99";
 
-    let shootingGroup = svg
-      .append("g")
-      .attr(
-        "transform",
-        "translate(" + width * 0.04 + ", " + joyplotHeight * 0.7 + ")"
+    dataFlat.forEach((object, i) => {
+      if (object.Event === "" || object.Hidden === "TRUE") return;
+      console.log(
+        object.Event,
+        object["Gun control searches"],
+        xScale(object.Month)
       );
 
-    shootingGroup
-      .append("text")
-      .attr("font-size", guideFontSize)
-      .attr("font-weight", "bold")
-      .text("Virginia tech")
-      .attr("fill", annotationColor);
+      let annotation = svg
+        .append("g")
+        .classed("annotation", true)
+        .attr(
+          "transform",
+          "translate(" +
+            xScale(object.Month) +
+            ", " +
+            (yScale(object["Gun control searches"]) - 3) +
+            ")"
+        );
 
-    shootingGroup
-      .append("line")
-      .attr("x1", -2)
-      .attr("y1", 2)
-      .attr("x2", -10)
-      .attr("y2", 10)
-      .attr("stroke", annotationColor);
+      annotation
+        .append("text")
+        .attr("font-size", guideFontSize)
+        .attr("font-weight", "bold")
+        .text(object.Event)
+        .attr("fill", annotationColor)
+        .attr("x", 6)
+        .attr("y", -guideFontSize / 2);
+      // .attr("transform", "rotate(-45)");
+
+      annotation
+        .append("line")
+        .attr("x1", 0)
+        .attr("y1", 0)
+        .attr("x2", 5)
+        .attr("y2", -5)
+        .attr("stroke", annotationColor);
+    });
+
+    // // Virginia tech
+    // let virginiaTech = svg
+    //   .append("g")
+    //   .attr(
+    //     "transform",
+    //     "translate(" + width * 0.04 + ", " + joyplotHeight * 0.7 + ")"
+    //   );
+
+    // virginiaTech
+    //   .append("text")
+    //   .attr("font-size", guideFontSize)
+    //   .attr("font-weight", "bold")
+    //   .text("Virginia tech")
+    //   .attr("fill", annotationColor);
+
+    // virginiaTech
+    //   .append("line")
+    //   .attr("x1", -2)
+    //   .attr("y1", 2)
+    //   .attr("x2", -10)
+    //   .attr("y2", 10)
+    //   .attr("stroke", annotationColor);
+
+    // //
+    // let supremeCourt = svg
+    //   .append("g")
+    //   .attr(
+    //     "transform",
+    //     "translate(" + width * 0.13 + ", " + joyplotHeight * 0.8 + ")"
+    //   );
+
+    // supremeCourt
+    //   .append("text")
+    //   .attr("font-size", guideFontSize)
+    //   .attr("font-weight", "bold")
+    //   .text("Supreme Court handgun ban case")
+    //   .attr("fill", annotationColor);
+
+    // supremeCourt
+    //   .append("line")
+    //   .attr("x1", -2)
+    //   .attr("y1", 2)
+    //   .attr("x2", -10)
+    //   .attr("y2", 10)
+    //   .attr("stroke", annotationColor);
 
     // Timeline text
     let timeLineTextLeft = div
@@ -236,7 +300,7 @@ class Control extends Component {
       .style("padding", "0 4px 0 4px");
 
     dataFlat.columns.forEach((volume, i) => {
-      if (volume === "Month" || volume === "Event") return;
+      if (volume !== "Gun control searches") return;
 
       area.y1(d => {
         return yScale(d[volume]);
@@ -298,6 +362,8 @@ class Control extends Component {
       timeLineTextLeft.style("left", width * 0.1 + 10 + "px");
       timeLineTextRight.style("right", width * 0.1 + 10 + "px");
 
+      
+
       // timeLineTextRight.style("right", width * 0.37 - 20 + "px");
       // timeEventMarker
       //   .attr("x1", width * splitPoint)
@@ -319,7 +385,7 @@ class Control extends Component {
       // );
 
       dataFlat.columns.forEach((volume, i) => {
-        if (volume === "Month" || volume === "Event") return;
+        if (volume !== "Gun control searches") return;
 
         area.y1(d => {
           return yScale(d[volume]);
