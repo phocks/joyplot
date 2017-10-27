@@ -271,6 +271,17 @@ class Joyplot extends Component {
         .style("text-align", "left")
         .style("height", joyplotHeight + "px")
         .style("color", "#333");
+
+      // Resize labels on mobile
+      if (width < 500) {
+        d3
+          .selectAll("." + styles.labels + " div")
+          .style("font-size", fontSize - 1 + "px");
+      } else {
+        d3
+          .selectAll("." + styles.labels + " div")
+          .style("font-size", fontSize + "px");
+      }
     });
 
     // Remove and redraw chart
@@ -304,6 +315,17 @@ class Joyplot extends Component {
       // SelectAll manipulation
       labelMargin = width * splitPoint;
       d3.selectAll("." + styles.labels).style("width", labelMargin - 10 + "px");
+
+      // Resize labels on mobile
+      if (width < 500) {
+        d3
+          .selectAll("." + styles.labels + " div")
+          .style("font-size", fontSize - 1 + "px");
+      } else {
+        d3
+          .selectAll("." + styles.labels + " div")
+          .style("font-size", fontSize + "px");
+      }
 
       d3.selectAll("." + styles.singlePlot).remove();
 
