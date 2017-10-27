@@ -28,7 +28,7 @@ class Control extends Component {
       labelMargin = 110,
       spacing = 200,
       totalPlots = dataFlat.columns.length - 1,
-      height = (totalPlots - 3) * spacing + joyplotHeight,
+      height = joyplotHeight, // (totalPlots - 3) * spacing + joyplotHeight,
       guideFill = "rgba(92, 108, 112, 0.5)",
       guideTextFill = "rgba(92, 108, 122, 1.0)",
       lineWidth = 1,
@@ -138,7 +138,7 @@ class Control extends Component {
     //   .attr("y", 13);
 
     // Time periods
-    let timeLineYPos = -25;
+    let timeLineYPos = -35;
 
     let timeLine = svg
       .append("line")
@@ -196,9 +196,14 @@ class Control extends Component {
       console.log(
         object.Event,
         object["Gun control searches"],
-        xScale(object.Month)
+        object.Month,
+        xScale(object.Month),
+        object.Alignment
       );
 
+      let annotationLineSize = 5;
+
+      // Draw left aligned annotation
       let annotation = svg
         .append("g")
         .classed("annotation", true)
@@ -211,23 +216,46 @@ class Control extends Component {
             ")"
         );
 
-      annotation
+      let annotationText = annotation
         .append("text")
         .attr("font-size", guideFontSize)
         .attr("font-weight", "bold")
         .text(object.Event)
         .attr("fill", annotationColor)
-        .attr("x", 6)
-        .attr("y", -guideFontSize / 2);
+        .attr("x", annotationLineSize + 1)
+        .attr("y", -annotationLineSize - 1);
       // .attr("transform", "rotate(-45)");
 
-      annotation
+      let annotationLine = annotation
         .append("line")
         .attr("x1", 0)
         .attr("y1", 0)
-        .attr("x2", 5)
-        .attr("y2", -5)
+        .attr("x2", annotationLineSize)
+        .attr("y2", -annotationLineSize)
         .attr("stroke", annotationColor);
+
+      // Right align some labels
+      if (object.Alignment === "right") {
+        annotationText
+          .attr("text-anchor", "end")
+          .attr("x", -annotationLineSize - 1)
+          .attr("y", -annotationLineSize - 1);
+
+        annotationLine
+          .attr("x2", -annotationLineSize)
+          .attr("y2", -annotationLineSize);
+      } 
+
+      if (object.Alignment === "center") {
+        annotationText
+        .attr("text-anchor", "middle")
+        .attr("x", 0)
+        .attr("y", -annotationLineSize * 1.9 - 3);
+
+      annotationLine
+        .attr("x2", 0)
+        .attr("y2", -annotationLineSize * 1.9);
+      }
     });
 
     // // Virginia tech
@@ -361,8 +389,6 @@ class Control extends Component {
       timeLineRightBoundary.attr("x1", width).attr("x2", width);
       timeLineTextLeft.style("left", width * 0.1 + 10 + "px");
       timeLineTextRight.style("right", width * 0.1 + 10 + "px");
-
-      
 
       // timeLineTextRight.style("right", width * 0.37 - 20 + "px");
       // timeEventMarker
