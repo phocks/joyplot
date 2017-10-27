@@ -24,8 +24,9 @@ class Vegas extends Component {
     // Inital variables
     let margin = { top: 60, right: 15, bottom: 60, left: 15 },
       width = parseInt(d3.select("." + styles.control).style("width"), 10),
+      splitPoint = 0.222,
       joyplotHeight = 155,
-      labelMargin = 110,
+      labelMargin = width * splitPoint,
       spacing = 50,
       totalPlots = dataFlat.columns.length - 1,
       height = (totalPlots - 1) * spacing + joyplotHeight,
@@ -36,8 +37,7 @@ class Vegas extends Component {
       interestLineWidth = 50,
       fontSize = 15,
       guideFontSize = 11,
-      maxSearchIndex = 100,
-      splitPoint = 0.222;
+      maxSearchIndex = 100;
 
     // We are using Mike Bostock's margin conventions https://bl.ocks.org/mbostock/3019563
     width = width - margin.left - margin.right;
@@ -385,14 +385,11 @@ class Vegas extends Component {
       timeEventMarker
         .attr("x1", width * splitPoint)
         .attr("x2", width * splitPoint);
-      // shootingGroup.attr(
-      //   "transform",
-      //   "translate(" + width * 0.48 + ", " + joyplotHeight * 0.55 + ")"
-      // );
-      // gunControlGroup.attr(
-      //   "transform",
-      //   "translate(" + width * 0.85 + ", " + joyplotHeight * 0.55 + ")"
-      // );
+        
+        // Label resizing
+      labelMargin = width * splitPoint;
+
+      d3.selectAll("." + styles.labels).style("width", labelMargin - 10 + "px")
 
       d3.selectAll("." + styles.singlePlot).remove();
 
