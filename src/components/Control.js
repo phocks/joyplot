@@ -22,7 +22,7 @@ class Control extends Component {
 
   createChart(error, dataFlat) {
     // Inital variables
-    let margin = { top: 60, right: 15, bottom: 70, left: 15 },
+    let margin = { top: 60, right: 15, bottom: 60, left: 15 },
       width = parseInt(d3.select("." + styles.control).style("width"), 10),
       joyplotHeight = 256,
       labelMargin = 110,
@@ -206,7 +206,7 @@ class Control extends Component {
       // Draw left aligned annotation
       let annotation = svg
         .append("g")
-        .classed("annotation", true)
+        .classed(styles.annotation, true)
         .attr(
           "transform",
           "translate(" +
@@ -403,7 +403,10 @@ class Control extends Component {
       //   "translate(" + width * 0.85 + ", " + joyplotHeight * 0.55 + ")"
       // );
 
+      // Remove all loop-through items so we can replace later
+      console.log(styles);
       d3.selectAll("." + styles.singlePlot).remove();
+      d3.selectAll("." + styles.annotation).remove();
 
       // searchInterest.attr(
       //   "transform",

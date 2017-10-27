@@ -22,7 +22,7 @@ class Pulse extends Component {
 
   createChart(error, dataFlat, gunControlData) {
     // Inital variables
-    let margin = { top: 60, right: 15, bottom: 70, left: 15 },
+    let margin = { top: 60, right: 15, bottom: 60, left: 15 },
       width = parseInt(d3.select("." + styles.pulse).style("width"), 10),
       joyplotHeight = 75,
       labelMargin = 110,

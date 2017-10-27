@@ -25,7 +25,7 @@ class Joyplot extends Component {
 
   createChart(error, dataFlat) {
     // Initial values
-    let margin = { top: 60, right: 15, bottom: 70, left: 15 },
+    let margin = { top: 60, right: 15, bottom: 60, left: 15 },
       width = parseInt(d3.select("." + styles.joyplot).style("width"), 10),
       joyplotHeight = 76,
       labelMargin = 120,
