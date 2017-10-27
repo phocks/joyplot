@@ -266,11 +266,18 @@ class Pulse extends Component {
       .text("1 week")
       .style("position", "absolute")
       .style("top", timeLineYPos + margin.top - guideFontSize * 0.6 + "px")
-      .style("left", width / 6.5 - 14 + "px")
+      .style("left", width / 6.5 - 14 + "px") // Overridden later
       .style("color", guideTextFill)
       .style("font-size", guideFontSize + "px")
       .style("background-color", "#f9f9f9")
       .style("padding", "0 4px 0 4px");
+
+    // Hacky way of detecting width of text
+    let textWidth = timeLineTextLeft.node().getBoundingClientRect().width;
+    timeLineTextLeft.style(
+      "left",
+      width * 0.146 - textWidth * 0.5 + margin.left + "px"
+    );
 
     let timeLineTextRight = div
       .append("span")
@@ -282,6 +289,13 @@ class Pulse extends Component {
       .style("font-size", guideFontSize + "px")
       .style("background-color", "#f9f9f9")
       .style("padding", "0 4px 0 4px");
+
+    // Hacky way of detecting width of text
+    let textWidth2 = timeLineTextRight.node().getBoundingClientRect().width;
+    timeLineTextRight.style(
+      "right",
+      width * 0.36 - textWidth2 * 0.5 + margin.right + "px"
+    );
 
     dataFlat.columns.forEach((volume, i) => {
       if (volume === "Week") return;
@@ -342,7 +356,6 @@ class Pulse extends Component {
     // Remove and redraw chart
     // d3.select(window).on("resize", resizePulse);
     // Use addEventListener to avoid overriding the listener
-    
 
     resizePulse = () => {
       width = parseInt(d3.select("." + styles.pulse).style("width"), 10);
@@ -362,8 +375,14 @@ class Pulse extends Component {
       // Direct resizing
       timeLine.attr("x2", width);
       timeLineRightBoundary.attr("x1", width).attr("x2", width);
-      timeLineTextLeft.style("left", width / 6.5 - 14 + "px")
-      timeLineTextRight.style("right", width * 0.37 - 20 + "px");
+      timeLineTextLeft.style(
+        "left",
+        width * 0.146 - textWidth * 0.5 + margin.left + "px"
+      );
+      timeLineTextRight.style(
+        "right",
+        width * 0.36 - textWidth2 * 0.5 + margin.right + "px"
+      );
       timeEventMarker
         .attr("x1", width * splitPoint)
         .attr("x2", width * splitPoint);
@@ -371,8 +390,7 @@ class Pulse extends Component {
         "transform",
         "translate(" + width * 0.48 + ", " + joyplotHeight * 0.55 + ")"
       );
-      gunControlGroup 
-      .attr(
+      gunControlGroup.attr(
         "transform",
         "translate(" + width * 0.85 + ", " + joyplotHeight * 0.55 + ")"
       );
@@ -398,7 +416,6 @@ class Pulse extends Component {
         // Firefox and Opera render these lines 1px down so
         // if (firefox || opera) downPageLine--;
 
-
         svg
           .append("path")
           .classed(styles.singlePlot, true)
@@ -423,7 +440,7 @@ class Pulse extends Component {
           .attr("transform", "translate(0, " + downPage + ")")
           .attr("d", area);
       });
-    } // end resizePulse
+    }; // end resizePulse
     window.addEventListener("resize", resizePulse);
   } // end createChart
 

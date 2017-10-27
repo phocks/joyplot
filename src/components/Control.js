@@ -310,7 +310,7 @@ class Control extends Component {
       .text("2007")
       .style("position", "absolute")
       .style("top", timeLineYPos + margin.top - guideFontSize * 0.6 + "px")
-      .style("left", width * 0.1 + 10 + "px")
+      .style("left", width * 0.1 + margin.left + "px")
       .style("color", guideTextFill)
       .style("font-size", guideFontSize + "px")
       .style("background-color", "#f9f9f9")
@@ -321,7 +321,7 @@ class Control extends Component {
       .text("2017")
       .style("position", "absolute")
       .style("top", timeLineYPos + margin.top - guideFontSize * 0.6 + "px")
-      .style("right", width * 0.1 + 10 + "px")
+      .style("right", width * 0.1 + margin.right + "px")
       .style("color", guideTextFill)
       .style("font-size", guideFontSize + "px")
       .style("background-color", "#f9f9f9")
@@ -387,10 +387,8 @@ class Control extends Component {
       // Direct resizing
       timeLine.attr("x2", width);
       timeLineRightBoundary.attr("x1", width).attr("x2", width);
-      timeLineTextLeft.style("left", width * 0.1 + 10 + "px");
-      timeLineTextRight.style("right", width * 0.1 + 10 + "px");
-
-      
+      timeLineTextLeft.style("left", width * 0.1 + margin.left + "px");
+      timeLineTextRight.style("right", width * 0.1 + margin.right + "px");
 
       // Remove all loop-through items so we can replace later
       d3.selectAll("." + styles.singlePlot).remove();
@@ -425,7 +423,7 @@ class Control extends Component {
       });
 
       // Re-annotate on resize
-      dataFlat.forEach(annotate)
+      dataFlat.forEach(annotate);
     };
     window.addEventListener("resize", resizeControl);
   } // end createChart

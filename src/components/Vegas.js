@@ -214,7 +214,10 @@ class Vegas extends Component {
 
     // Hacky way of detecting width of text
     let textWidth = timeLineTextLeft.node().getBoundingClientRect().width;
-    timeLineTextLeft.style("left", width / 8 - textWidth / 2 + "px");
+    timeLineTextLeft.style(
+      "left",
+      width * 0.11 - textWidth * 0.5 + margin.left + "px"
+    );
 
     let timeLineTextRight = div
       .append("span")
@@ -227,9 +230,12 @@ class Vegas extends Component {
       .style("background-color", "#f9f9f9")
       .style("padding", "0 4px 0 4px");
 
-      // Hacky way of detecting width of text
+    // Hacky way of detecting width of text
     let textWidth2 = timeLineTextRight.node().getBoundingClientRect().width;
-    timeLineTextRight.style("right", width * 0.40 - textWidth2 / 2 + "px");
+    timeLineTextRight.style(
+      "right",
+      width * 0.4 - textWidth2 * 0.5 + margin.right + "px"
+    );
 
     // Coloured pointers to area charts
     // let shootingGroupColor = "#007D99";
@@ -368,8 +374,14 @@ class Vegas extends Component {
       // Direct resizing
       timeLine.attr("x2", width);
       timeLineRightBoundary.attr("x1", width).attr("x2", width);
-      timeLineTextLeft.style("left", width / 8 - textWidth / 2 + "px");
-      timeLineTextRight.style("right", width * 0.40 - textWidth2 / 2 + "px");
+      timeLineTextLeft.style(
+        "left",
+        width * 0.11 - textWidth * 0.5 + margin.left + "px"
+      );
+      timeLineTextRight.style(
+        "right",
+        width * 0.4 - textWidth2 * 0.5 + margin.right + "px"
+      );
       timeEventMarker
         .attr("x1", width * splitPoint)
         .attr("x2", width * splitPoint);
