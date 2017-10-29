@@ -188,7 +188,7 @@ class Control extends Component {
     //   .attr("shape-rendering", shapeRendering);
 
     // Annotations of different peaks we are doing this bespoke for now unfortunately
-    console.log(dataFlat);
+    // console.log(dataFlat);
     let annotationColor = "#007D99";
 
     dataFlat.forEach(annotate);
