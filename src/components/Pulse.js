@@ -265,7 +265,7 @@ class Pulse extends Component {
       .append("span")
       .text("1 week")
       .style("position", "absolute")
-      .style("top", timeLineYPos + margin.top - guideFontSize * 0.6 + "px")
+      .style("top", timeLineYPos + margin.top - guideFontSize * 0.65 + "px")
       .style("left", width / 6.5 - 14 + "px") // Overridden later
       .style("color", guideTextFill)
       .style("font-size", guideFontSize + "px")
@@ -283,7 +283,7 @@ class Pulse extends Component {
       .append("span")
       .text("2 weeks")
       .style("position", "absolute")
-      .style("top", timeLineYPos + margin.top - guideFontSize * 0.6 + "px")
+      .style("top", timeLineYPos + margin.top - guideFontSize * 0.65 + "px")
       .style("right", width * 0.37 - 20 + "px")
       .style("color", guideTextFill)
       .style("font-size", guideFontSize + "px")

@@ -205,7 +205,7 @@ class Vegas extends Component {
       .append("span")
       .text("1 week")
       .style("position", "absolute")
-      .style("top", timeLineYPos + margin.top - guideFontSize * 0.6 + "px")
+      .style("top", timeLineYPos + margin.top - guideFontSize * 0.65 + "px")
       .style("left", width / 6 - 14 + "px") // overwritten later
       .style("color", guideTextFill)
       .style("font-size", guideFontSize + "px")
@@ -223,7 +223,7 @@ class Vegas extends Component {
       .append("span")
       .text("3 weeks")
       .style("position", "absolute")
-      .style("top", timeLineYPos + margin.top - guideFontSize * 0.6 + "px")
+      .style("top", timeLineYPos + margin.top - guideFontSize * 0.65 + "px")
       .style("right", width * 0.4 - 20 + "px")
       .style("color", guideTextFill)
       .style("font-size", guideFontSize + "px")
