@@ -3,9 +3,8 @@ import * as styles from "./Joyplot.scss";
 import * as d3 from "d3";
 import { format } from "date-fns";
 
-
 // Making these event listener function file scope so they unmount
-// until I find a better way. Please help lol
+// when hot reloaded... until I find a better way
 var resizeJoyplot;
 
 class Joyplot extends Component {
@@ -46,16 +45,6 @@ class Joyplot extends Component {
     // We are using Mike Bostock's margin conventions https://bl.ocks.org/mbostock/3019563
     width = width - margin.left - margin.right;
 
-    // Due to a weird Firefox bug we need to sniff user agent
-    // var chrome = navigator.userAgent.indexOf("Chrome") > -1;
-    // var explorer = navigator.userAgent.indexOf("MSIE") > -1;
-    // var firefox = navigator.userAgent.indexOf("Firefox") > -1;
-    // var safari = navigator.userAgent.indexOf("Safari") > -1;
-    // var camino = navigator.userAgent.indexOf("Camino") > -1;
-    // var opera = navigator.userAgent.toLowerCase().indexOf("op") > -1;
-    // if (chrome && safari) safari = false;
-    // if (chrome && opera) chrome = false;
-
     // Set up a date parser
     var parseDate = d3.timeParse("%d/%m/%y");
 
@@ -73,12 +62,10 @@ class Joyplot extends Component {
       .curve(d3.curveMonotoneX);
 
     // Set up some lines etc
-    // let baselineData = [[0, 0], [labelMargin - 5, 0]],
     let interestLineData = [[0, 0], [interestLineWidth, 0]];
 
     let lineGenerator = d3.line();
 
-    //let baseline = lineGenerator(baselineData), // Underline labels
     let interestline = lineGenerator(interestLineData); // Point out 100% search interest
 
     // Parse the dates to use full date format
@@ -143,7 +130,6 @@ class Joyplot extends Component {
       .append("text")
       .attr("fill", guideTextFill)
       .attr("font-size", guideFontSize);
-    // .attr("text-anchor", "end");
 
     searchInterestText
       .append("tspan")
@@ -157,7 +143,7 @@ class Joyplot extends Component {
       .attr("y", 13);
 
     // Time periods
-    let timeLineYPos = -25; // joyplotHeight * 0.4;
+    let timeLineYPos = -25;
 
     let timeLine = svg
       .append("line")
@@ -229,10 +215,6 @@ class Joyplot extends Component {
       let downPageText = spacing * (i - 1) + margin.top - 2;
       let downPageLine = spacing * (i - 1) + joyplotHeight;
 
-      // Firefox and Opera render these lines 1px down so
-      // if (firefox || opera) downPageLine--;
-      // Actually it turns out to be a stranger issue
-
       svg
         .append("path")
         .attr("class", styles.singlePlot)
@@ -240,17 +222,6 @@ class Joyplot extends Component {
         .attr("fill", joyplotFill)
         .attr("transform", "translate(0, " + downPage + ")")
         .attr("d", area);
-
-      // Draw a baseline
-      // svg
-      //   .append("path")
-      //   .attr("class", styles.singlePlot)
-      //   .attr("d", baseline)
-      //   .attr("stroke", joyplotFill)
-      //   .attr("stroke-width", lineWidth + "px")
-      //   .attr("fill", "none")
-      //   // .attr("shape-rendering", shapeRendering)
-      //   .attr("transform", "translate(0, " + downPageLine + ")");
 
       // Render the labels in a span to get text wrapping
       // We put it in a table-cell to achieve bottom aligning
@@ -299,9 +270,6 @@ class Joyplot extends Component {
         })
       );
 
-      // baselineData = [[0, 0], [labelMargin - 5, 0]];
-      // baseline = lineGenerator(baselineData);
-
       // Direct element manipulation first
       timeLine.attr("x2", width);
       timeLineRightBoundary.attr("x1", width).attr("x2", width);
@@ -341,9 +309,6 @@ class Joyplot extends Component {
         let downPageLine = spacing * (i - 1) + joyplotHeight;
         let downPageText = spacing * (i - 1) + 95;
 
-        // Firefox and Opera render these lines 1px down so
-        // if (firefox || opera) downPageLine--;
-
         svg
           .append("path")
           .attr("class", styles.singlePlot)
@@ -351,16 +316,6 @@ class Joyplot extends Component {
           .attr("fill", "rgba(0, 125, 153, 0.6")
           .attr("transform", "translate(0, " + downPage + ")")
           .attr("d", area);
-
-        // svg
-        //   .append("path")
-        //   .attr("class", styles.singlePlot)
-        //   .attr("d", baseline)
-        //   .attr("stroke", joyplotFill)
-        //   .attr("stroke-width", lineWidth + "px")
-        //   .attr("fill", "none")
-        //   .attr("shape-rendering", shapeRendering)
-        //   .attr("transform", "translate(0, " + downPageLine + ")");
       });
     };
 

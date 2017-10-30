@@ -25,7 +25,7 @@ class Control extends Component {
     let margin = { top: 60, right: 15, bottom: 60, left: 15 },
       width = parseInt(d3.select("." + styles.control).style("width"), 10),
       joyplotHeight = 256,
-      labelMargin = width * (1/2),
+      labelMargin = width * (1 / 2),
       spacing = 200,
       totalPlots = dataFlat.columns.length - 1,
       height = joyplotHeight, // (totalPlots - 3) * spacing + joyplotHeight,
@@ -104,39 +104,6 @@ class Control extends Component {
       })
     ]);
 
-    // Draw some guides up top
-    // const searchInterest = svg
-    //   .append("g")
-    //   .attr(
-    //     "transform",
-    //     "translate(" + (width * 0.33 - interestLineWidth / 2 + 4) + ", 0)"
-    //   );
-
-    // searchInterest
-    //   .append("path")
-    //   .attr("d", interestline)
-    //   .attr("stroke", guideFill)
-    //   .attr("stroke-width", lineWidth + "px")
-    //   .attr("fill", "none")
-    //   .attr("shape-rendering", shapeRendering);
-
-    // const searchInterestText = searchInterest
-    //   .append("text")
-    //   .attr("fill", guideTextFill)
-    //   .attr("font-size", 11)
-    //   .attr("text-anchor", "end");
-
-    // searchInterestText
-    //   .append("tspan")
-    //   .text("100% search")
-    //   .attr("x", -5);
-
-    // searchInterestText
-    //   .append("tspan")
-    //   .text("interest")
-    //   .attr("x", -5)
-    //   .attr("y", 13);
-
     // Time periods
     let timeLineYPos = -35;
 
@@ -175,34 +142,13 @@ class Control extends Component {
       .attr("fill", "none")
       .attr("shape-rendering", shapeRendering);
 
-    // Middle boundary line - reposition below
-    // let timeEventMarker = svg
-    //   .append("line")
-    //   .attr("x1", width * splitPoint)
-    //   .attr("y1", timeLineYPos - 5.5)
-    //   .attr("x2", width * splitPoint)
-    //   .attr("y2", timeLineYPos + 5.5)
-    //   .attr("stroke", guideFill)
-    //   .attr("stroke-width", lineWidth + "px")
-    //   .attr("fill", "none")
-    //   .attr("shape-rendering", shapeRendering);
-
     // Annotations of different peaks we are doing this bespoke for now unfortunately
-    // console.log(dataFlat);
     let annotationColor = "#007D99";
 
     dataFlat.forEach(annotate);
 
     function annotate(object, i) {
       if (object.Event === "" || object.Hidden === "TRUE") return;
-
-      // console.log(
-      //   object.Event,
-      //   object["Gun control searches"],
-      //   object.Month,
-      //   xScale(object.Month),
-      //   object.Alignment
-      // );
 
       let annotationLineSize = 5;
 
@@ -262,7 +208,6 @@ class Control extends Component {
         annotation.style("display", "none");
       }
     }
-
 
     // Timeline text
     let timeLineTextLeft = div
@@ -341,9 +286,6 @@ class Control extends Component {
         })
       );
 
-      // baselineData = [[0, 0], [labelMargin - 5, 0]];
-      // baseline = lineGenerator(baselineData);
-
       // Direct resizing
       timeLine.attr("x2", width);
       timeLineRightBoundary.attr("x1", width).attr("x2", width);
@@ -352,18 +294,15 @@ class Control extends Component {
 
       // Selection based resizing
 
-      // Resize the labels 
-      labelMargin = width * (1/2),
-      d3.selectAll("." + styles.labels).style("width", labelMargin - 10 + "px");
+      // Resize the labels
+      (labelMargin = width * (1 / 2)),
+        d3
+          .selectAll("." + styles.labels)
+          .style("width", labelMargin - 10 + "px");
 
       // Remove all loop-through items so we can replace later
       d3.selectAll("." + styles.singlePlot).remove();
       d3.selectAll("." + styles.annotation).remove();
-
-      // searchInterest.attr(
-      //   "transform",
-      //   "translate(" + (width * 0.33 - interestLineWidth / 2 + 4) + ", 0)"
-      // );
 
       dataFlat.columns.forEach((volume, i) => {
         if (volume !== "Gun control searches") return;

@@ -319,7 +319,6 @@ class Vegas extends Component {
         })
       );
 
-
       // Direct resizing
       timeLine.attr("x2", width);
       timeLineRightBoundary.attr("x1", width).attr("x2", width);
@@ -368,9 +367,6 @@ class Vegas extends Component {
         let downPage = spacing * (i - 1);
         let downPageLine = spacing * (i - 1) + joyplotHeight;
         let downPageText = spacing * (i - 1) + 95;
-
-        // Firefox and Opera render these lines 1px down so
-        // if (firefox || opera) downPageLine--;
 
         svg
           .append("path")

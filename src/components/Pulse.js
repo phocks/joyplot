@@ -353,10 +353,6 @@ class Pulse extends Component {
         .attr("d", area);
     });
 
-    // Remove and redraw chart
-    // d3.select(window).on("resize", resizePulse);
-    // Use addEventListener to avoid overriding the listener
-
     resizePulse = () => {
       width = parseInt(d3.select("." + styles.pulse).style("width"), 10);
       width = width - margin.left - margin.right;
@@ -368,9 +364,6 @@ class Pulse extends Component {
           return d.Week;
         })
       );
-
-      // baselineData = [[0, 0], [labelMargin - 5, 0]];
-      // baseline = lineGenerator(baselineData);
 
       // Direct resizing
       timeLine.attr("x2", width);
@@ -416,9 +409,6 @@ class Pulse extends Component {
         let downPage = spacing * (i - 1);
         let downPageLine = spacing * (i - 1) + joyplotHeight;
         let downPageText = spacing * (i - 1) + 95;
-
-        // Firefox and Opera render these lines 1px down so
-        // if (firefox || opera) downPageLine--;
 
         svg
           .append("path")
