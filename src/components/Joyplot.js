@@ -77,8 +77,8 @@ class Joyplot extends Component {
 
     let lineGenerator = d3.line();
 
-    let baseline = lineGenerator(baselineData), // Underline labels
-      interestline = lineGenerator(interestLineData); // Point out 100% search interest
+    //let baseline = lineGenerator(baselineData), // Underline labels
+    let interestline = lineGenerator(interestLineData); // Point out 100% search interest
 
     // Parse the dates to use full date format
     dataFlat.forEach(d => {

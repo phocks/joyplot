@@ -2,6 +2,12 @@ body {
   margin: 0;
 }
 
+:global {  // Used to fix weird underlining bug in Edge
+  .Main > a[name] {
+    text-decoration: none;
+  }
+}
+
 .root {
   // display: flex;
   // flex-direction: column;
