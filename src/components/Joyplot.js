@@ -28,7 +28,7 @@ class Joyplot extends Component {
     let margin = { top: 60, right: 15, bottom: 60, left: 15 },
       width = parseInt(d3.select("." + styles.joyplot).style("width"), 10),
       joyplotHeight = 76,
-      splitPoint = 0.2,
+      splitPoint = 0.18,
       labelMargin = width * splitPoint,
       spacing = 52,
       totalPlots = dataFlat.columns.length - 1,
