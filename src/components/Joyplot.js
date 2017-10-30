@@ -72,8 +72,8 @@ class Joyplot extends Component {
       .curve(d3.curveMonotoneX);
 
     // Set up some lines etc
-    let baselineData = [[0, 0], [labelMargin - 5, 0]],
-      interestLineData = [[0, 0], [interestLineWidth, 0]];
+    // let baselineData = [[0, 0], [labelMargin - 5, 0]],
+    let interestLineData = [[0, 0], [interestLineWidth, 0]];
 
     let lineGenerator = d3.line();
 
@@ -298,8 +298,8 @@ class Joyplot extends Component {
         })
       );
 
-      baselineData = [[0, 0], [labelMargin - 5, 0]];
-      baseline = lineGenerator(baselineData);
+      // baselineData = [[0, 0], [labelMargin - 5, 0]];
+      // baseline = lineGenerator(baselineData);
 
       // Direct element manipulation first
       timeLine.attr("x2", width);
