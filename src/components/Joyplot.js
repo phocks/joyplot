@@ -3,6 +3,7 @@ import * as styles from "./Joyplot.scss";
 import * as d3 from "d3";
 import { format } from "date-fns";
 
+
 // Making these event listener function file scope so they unmount
 // until I find a better way. Please help lol
 var resizeJoyplot;
@@ -28,7 +29,7 @@ class Joyplot extends Component {
     let margin = { top: 60, right: 15, bottom: 60, left: 15 },
       width = parseInt(d3.select("." + styles.joyplot).style("width"), 10),
       joyplotHeight = 76,
-      splitPoint = 0.18,
+      splitPoint = 0.16,
       labelMargin = width * splitPoint,
       spacing = 52,
       totalPlots = dataFlat.columns.length - 1,
