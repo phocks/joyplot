@@ -37,7 +37,8 @@ class Pulse extends Component {
       interestLineWidth = 50,
       fontSize = 15,
       guideFontSize = 11,
-      maxSearchIndex = 100;
+      maxSearchIndex = 100,
+      resizeTimeout = 10;
 
     // We are using Mike Bostock's margin conventions https://bl.ocks.org/mbostock/3019563
     width = width - margin.left - margin.right;
@@ -353,89 +354,97 @@ class Pulse extends Component {
         .attr("d", area);
     });
 
+    // Resize function with timeout
+    var resizeTimer;
+
     resizePulse = () => {
-      width = parseInt(d3.select("." + styles.pulse).style("width"), 10);
-      width = width - margin.left - margin.right;
+      clearTimeout(resizeTimer);
 
-      xScale = d3.scaleTime().range([0, width]);
+        resizeTimer = setTimeout(function() {
+        width = parseInt(d3.select("." + styles.pulse).style("width"), 10);
+        width = width - margin.left - margin.right;
 
-      xScale.domain(
-        d3.extent(dataFlat, function(d) {
-          return d.Week;
-        })
-      );
+        xScale = d3.scaleTime().range([0, width]);
 
-      // Direct resizing
-      timeLine.attr("x2", width);
-      timeLineRightBoundary.attr("x1", width).attr("x2", width);
-      timeLineTextLeft.style(
-        "left",
-        width * 0.146 - textWidth * 0.5 + margin.left + "px"
-      );
-      timeLineTextRight.style(
-        "right",
-        width * 0.36 - textWidth2 * 0.5 + margin.right + "px"
-      );
-      timeEventMarker
-        .attr("x1", width * splitPoint)
-        .attr("x2", width * splitPoint);
-      shootingGroup.attr(
-        "transform",
-        "translate(" + width * 0.48 + ", " + joyplotHeight * 0.55 + ")"
-      );
-      gunControlGroup.attr(
-        "transform",
-        "translate(" + width * 0.85 + ", " + joyplotHeight * 0.55 + ")"
-      );
+        xScale.domain(
+          d3.extent(dataFlat, function(d) {
+            return d.Week;
+          })
+        );
 
-      // Selection based resizing
-      labelMargin = width * splitPoint;
-      d3.selectAll("." + styles.labels).style("width", labelMargin - 10 + "px");
+        // Direct resizing
+        timeLine.attr("x2", width);
+        timeLineRightBoundary.attr("x1", width).attr("x2", width);
+        timeLineTextLeft.style(
+          "left",
+          width * 0.146 - textWidth * 0.5 + margin.left + "px"
+        );
+        timeLineTextRight.style(
+          "right",
+          width * 0.36 - textWidth2 * 0.5 + margin.right + "px"
+        );
+        timeEventMarker
+          .attr("x1", width * splitPoint)
+          .attr("x2", width * splitPoint);
+        shootingGroup.attr(
+          "transform",
+          "translate(" + width * 0.48 + ", " + joyplotHeight * 0.55 + ")"
+        );
+        gunControlGroup.attr(
+          "transform",
+          "translate(" + width * 0.85 + ", " + joyplotHeight * 0.55 + ")"
+        );
 
-      d3.selectAll("." + styles.singlePlot).remove();
+        // Selection based resizing
+        labelMargin = width * splitPoint;
+        d3.selectAll("." + styles.labels).style("width", labelMargin - 10 + "px");
 
-      searchInterest.attr(
-        "transform",
-        "translate(" + (width * 0.33 - interestLineWidth / 2 + 4) + ", 0)"
-      );
+        d3.selectAll("." + styles.singlePlot).remove();
 
-      dataFlat.columns.forEach((volume, i) => {
-        if (volume === "Week") return;
+        searchInterest.attr(
+          "transform",
+          "translate(" + (width * 0.33 - interestLineWidth / 2 + 4) + ", 0)"
+        );
 
-        area.y1(d => {
-          return yScale(d[volume]);
+        dataFlat.columns.forEach((volume, i) => {
+          if (volume === "Week") return;
+
+          area.y1(d => {
+            return yScale(d[volume]);
+          });
+
+          let downPage = spacing * (i - 1);
+          let downPageLine = spacing * (i - 1) + joyplotHeight;
+          let downPageText = spacing * (i - 1) + 95;
+
+          svg
+            .append("path")
+            .classed(styles.singlePlot, true)
+            .datum(dataFlat)
+            .attr("fill", shootingColor)
+            .attr("transform", "translate(0, " + downPage + ")")
+            .attr("d", area);
+
+          // Try to render gun control in same forEach loop
+          // rather than it's own loop to avoid overpaint
+          let gunControlVolumeLabel = gunControlData.columns[i];
+
+          area.y1(d => {
+            return yScale(d[gunControlVolumeLabel]);
+          });
+
+          svg
+            .append("path")
+            .classed(styles.singlePlot, true)
+            .datum(gunControlData)
+            .attr("fill", gunControlColor)
+            .attr("transform", "translate(0, " + downPage + ")")
+            .attr("d", area);
         });
-
-        let downPage = spacing * (i - 1);
-        let downPageLine = spacing * (i - 1) + joyplotHeight;
-        let downPageText = spacing * (i - 1) + 95;
-
-        svg
-          .append("path")
-          .classed(styles.singlePlot, true)
-          .datum(dataFlat)
-          .attr("fill", shootingColor)
-          .attr("transform", "translate(0, " + downPage + ")")
-          .attr("d", area);
-
-        // Try to render gun control in same forEach loop
-        // rather than it's own loop to avoid overpaint
-        let gunControlVolumeLabel = gunControlData.columns[i];
-
-        area.y1(d => {
-          return yScale(d[gunControlVolumeLabel]);
-        });
-
-        svg
-          .append("path")
-          .classed(styles.singlePlot, true)
-          .datum(gunControlData)
-          .attr("fill", gunControlColor)
-          .attr("transform", "translate(0, " + downPage + ")")
-          .attr("d", area);
-      });
+      }, resizeTimeout);
     }; // end resizePulse
     window.addEventListener("resize", resizePulse);
+    setTimeout(resizePulse, resizeTimeout);
   } // end createChart
 
   loadData() {

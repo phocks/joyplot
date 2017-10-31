@@ -40,7 +40,8 @@ class Joyplot extends Component {
       shapeRendering = "crispEdges", // auto | optimizeSpeed | crispEdges | geometricPrecision | inherit
       interestLineWidth = 40,
       fontSize = 15,
-      guideFontSize = 11;
+      guideFontSize = 11,
+      resizeTimeout = 10;
 
     // We are using Mike Bostock's margin conventions https://bl.ocks.org/mbostock/3019563
     width = width - margin.left - margin.right;
@@ -256,70 +257,80 @@ class Joyplot extends Component {
       }
     });
 
-    // Remove and redraw chart
+    // Remove and redraw chart. We are using a timer to resize after a while
+    // to avoid trying to resize when window not ready
+    var resizeTimer;
+
     resizeJoyplot = () => {
-      width = parseInt(d3.select("." + styles.joyplot).style("width"), 10);
-      width = width - margin.left - margin.right;
+      clearTimeout(resizeTimer);
+      
+      resizeTimer = setTimeout(function() {
+        width = parseInt(d3.select("." + styles.joyplot).style("width"), 10);
+        width = width - margin.left - margin.right;
 
-      // Update properties with new widths
-      xScale = d3.scaleTime().range([0, width]);
+        // Update properties with new widths
+        xScale = d3.scaleTime().range([0, width]);
 
-      xScale.domain(
-        d3.extent(dataFlat, function(d) {
-          return d.Week;
-        })
-      );
+        xScale.domain(
+          d3.extent(dataFlat, function(d) {
+            return d.Week;
+          })
+        );
 
-      // Direct element manipulation first
-      timeLine.attr("x2", width);
-      timeLineRightBoundary.attr("x1", width).attr("x2", width);
-      timeLineTextLeft.style("left", width * 0.05 + margin.left + "px");
-      timeLineTextRight.style("right", width * 0.05 + margin.right + "px");
+        // Direct element manipulation first
+        timeLine.attr("x2", width);
+        timeLineRightBoundary.attr("x1", width).attr("x2", width);
+        timeLineTextLeft.style("left", width * 0.05 + margin.left + "px");
+        timeLineTextRight.style("right", width * 0.05 + margin.right + "px");
 
-      searchInterest.attr(
-        "transform",
-        "translate(" + (width * 0.15 - interestLineWidth / 2 + 4) + ", 0)"
-      );
+        searchInterest.attr(
+          "transform",
+          "translate(" + (width * 0.15 - interestLineWidth / 2 + 4) + ", 0)"
+        );
 
-      // SelectAll manipulation
-      labelMargin = width * splitPoint;
-      d3.selectAll("." + styles.labels).style("width", labelMargin - 10 + "px");
-
-      // Resize labels on mobile
-      if (width < 500) {
+        // SelectAll manipulation
+        labelMargin = width * splitPoint;
         d3
-          .selectAll("." + styles.labels + " div")
-          .style("font-size", fontSize - 1 + "px");
-      } else {
-        d3
-          .selectAll("." + styles.labels + " div")
-          .style("font-size", fontSize + "px");
-      }
+          .selectAll("." + styles.labels)
+          .style("width", labelMargin - 10 + "px");
 
-      d3.selectAll("." + styles.singlePlot).remove();
+        // Resize labels on mobile
+        if (width < 500) {
+          d3
+            .selectAll("." + styles.labels + " div")
+            .style("font-size", fontSize - 1 + "px");
+        } else {
+          d3
+            .selectAll("." + styles.labels + " div")
+            .style("font-size", fontSize + "px");
+        }
 
-      dataFlat.columns.forEach((volume, i) => {
-        if (volume === "Week") return;
+        d3.selectAll("." + styles.singlePlot).remove();
 
-        area.y1(d => {
-          return yScale(d[volume]);
+        dataFlat.columns.forEach((volume, i) => {
+          if (volume === "Week") return;
+
+          area.y1(d => {
+            return yScale(d[volume]);
+          });
+
+          let downPage = spacing * (i - 1);
+          let downPageLine = spacing * (i - 1) + joyplotHeight;
+          let downPageText = spacing * (i - 1) + 95;
+
+          svg
+            .append("path")
+            .attr("class", styles.singlePlot)
+            .datum(dataFlat)
+            .attr("fill", "rgba(0, 125, 153, 0.6")
+            .attr("transform", "translate(0, " + downPage + ")")
+            .attr("d", area);
         });
-
-        let downPage = spacing * (i - 1);
-        let downPageLine = spacing * (i - 1) + joyplotHeight;
-        let downPageText = spacing * (i - 1) + 95;
-
-        svg
-          .append("path")
-          .attr("class", styles.singlePlot)
-          .datum(dataFlat)
-          .attr("fill", "rgba(0, 125, 153, 0.6")
-          .attr("transform", "translate(0, " + downPage + ")")
-          .attr("d", area);
-      });
+      }, resizeTimeout);
     };
 
     window.addEventListener("resize", resizeJoyplot);
+    setTimeout(resizeJoyplot, resizeTimeout);
   }
 
   loadData() {
