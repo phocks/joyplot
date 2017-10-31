@@ -37,7 +37,8 @@ class Vegas extends Component {
       interestLineWidth = 50,
       fontSize = 15,
       guideFontSize = 11,
-      maxSearchIndex = 100;
+      maxSearchIndex = 100,
+      resizeTimeout = 1000;
 
     // We are using Mike Bostock's margin conventions https://bl.ocks.org/mbostock/3019563
     width = width - margin.left - margin.right;
@@ -306,94 +307,102 @@ class Vegas extends Component {
 
     // Remove and redraw chart
     // Use addEventListener to avoid overriding the listener
+    var resizeTimer;
 
     resizeVegas = () => {
-      width = parseInt(d3.select("." + styles.control).style("width"), 10);
-      width = width - margin.left - margin.right;
+      clearTimeout(resizeTimer);
 
-      xScale = d3.scaleTime().range([0, width]);
+      resizeTimer = setTimeout(function() {
+        width = parseInt(d3.select("." + styles.control).style("width"), 10);
+        width = width - margin.left - margin.right;
 
-      xScale.domain(
-        d3.extent(dataFlat, function(d) {
-          return d.Week;
-        })
-      );
+        xScale = d3.scaleTime().range([0, width]);
 
-      // Direct resizing
-      timeLine.attr("x2", width);
-      timeLineRightBoundary.attr("x1", width).attr("x2", width);
-      timeLineTextLeft.style(
-        "left",
-        width * 0.11 - textWidth * 0.5 + margin.left + "px"
-      );
-      timeLineTextRight.style(
-        "right",
-        width * 0.4 - textWidth2 * 0.5 + margin.right + "px"
-      );
-      timeEventMarker
-        .attr("x1", width * splitPoint)
-        .attr("x2", width * splitPoint);
+        xScale.domain(
+          d3.extent(dataFlat, function(d) {
+            return d.Week;
+          })
+        );
 
-      // Label resizing
-      labelMargin = width * splitPoint;
+        // Direct resizing
+        timeLine.attr("x2", width);
+        timeLineRightBoundary.attr("x1", width).attr("x2", width);
+        timeLineTextLeft.style(
+          "left",
+          width * 0.11 - textWidth * 0.5 + margin.left + "px"
+        );
+        timeLineTextRight.style(
+          "right",
+          width * 0.4 - textWidth2 * 0.5 + margin.right + "px"
+        );
+        timeEventMarker
+          .attr("x1", width * splitPoint)
+          .attr("x2", width * splitPoint);
 
-      d3.selectAll("." + styles.labels).style("width", labelMargin - 10 + "px");
+        // Label resizing
+        labelMargin = width * splitPoint;
 
-      // Resize labels on mobile
-      if (width < 500) {
         d3
-          .selectAll("." + styles.labels + " div")
-          .style("font-size", fontSize - 1 + "px");
-      } else {
-        d3
-          .selectAll("." + styles.labels + " div")
-          .style("font-size", fontSize + "px");
-      }
+          .selectAll("." + styles.labels)
+          .style("width", labelMargin - 10 + "px");
 
-      d3.selectAll("." + styles.singlePlot).remove();
+        // Resize labels on mobile
+        if (width < 500) {
+          d3
+            .selectAll("." + styles.labels + " div")
+            .style("font-size", fontSize - 1 + "px");
+        } else {
+          d3
+            .selectAll("." + styles.labels + " div")
+            .style("font-size", fontSize + "px");
+        }
 
-      searchInterest.attr(
-        "transform",
-        "translate(" + (width * 0.255 - interestLineWidth / 2 + 4) + ", 0)"
-      );
+        d3.selectAll("." + styles.singlePlot).remove();
 
-      dataFlat.columns.forEach((volume, i) => {
-        if (volume === "Week") return;
+        searchInterest.attr(
+          "transform",
+          "translate(" + (width * 0.255 - interestLineWidth / 2 + 4) + ", 0)"
+        );
 
-        area.y1(d => {
-          return yScale(d[volume]);
+        dataFlat.columns.forEach((volume, i) => {
+          if (volume === "Week") return;
+
+          area.y1(d => {
+            return yScale(d[volume]);
+          });
+
+          let downPage = spacing * (i - 1);
+          let downPageLine = spacing * (i - 1) + joyplotHeight;
+          let downPageText = spacing * (i - 1) + 95;
+
+          svg
+            .append("path")
+            .classed(styles.singlePlot, true)
+            .datum(dataFlat)
+            .attr("fill", shootingColor)
+            .attr("transform", "translate(0, " + downPage + ")")
+            .attr("d", area);
+
+          // Try to render gun control in same forEach loop
+          // rather than it's own loop to avoid overpaint
+          let gunControlVolumeLabel = gunControlData.columns[i];
+
+          area.y1(d => {
+            return yScale(d[gunControlVolumeLabel]);
+          });
+
+          svg
+            .append("path")
+            .classed(styles.singlePlot, true)
+            .datum(gunControlData)
+            .attr("fill", gunControlColor)
+            .attr("transform", "translate(0, " + downPage + ")")
+            .attr("d", area);
         });
-
-        let downPage = spacing * (i - 1);
-        let downPageLine = spacing * (i - 1) + joyplotHeight;
-        let downPageText = spacing * (i - 1) + 95;
-
-        svg
-          .append("path")
-          .classed(styles.singlePlot, true)
-          .datum(dataFlat)
-          .attr("fill", shootingColor)
-          .attr("transform", "translate(0, " + downPage + ")")
-          .attr("d", area);
-
-        // Try to render gun control in same forEach loop
-        // rather than it's own loop to avoid overpaint
-        let gunControlVolumeLabel = gunControlData.columns[i];
-
-        area.y1(d => {
-          return yScale(d[gunControlVolumeLabel]);
-        });
-
-        svg
-          .append("path")
-          .classed(styles.singlePlot, true)
-          .datum(gunControlData)
-          .attr("fill", gunControlColor)
-          .attr("transform", "translate(0, " + downPage + ")")
-          .attr("d", area);
-      });
+      }, resizeTimeout);
     };
     window.addEventListener("resize", resizeVegas);
+    setTimeout(resizeVegas, resizeTimeout);
   } // end createChart
 
   componentWillUnmount() {
