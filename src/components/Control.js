@@ -37,7 +37,8 @@ class Control extends Component {
       fontSize = 15,
       guideFontSize = 11,
       maxSearchIndex = 100,
-      splitPoint = 0.288;
+      splitPoint = 0.288,
+      resizeTimeout = 10;
 
     // We are using Mike Bostock's margin conventions https://bl.ocks.org/mbostock/3019563
     width = width - margin.left - margin.right;
@@ -274,63 +275,70 @@ class Control extends Component {
 
     // Remove and redraw chart
     // Use addEventListener to avoid overriding the listener
+    var resizeTimer;
+
     resizeControl = () => {
-      width = parseInt(d3.select("." + styles.control).style("width"), 10);
-      width = width - margin.left - margin.right;
+      clearTimeout(resizeTimer);
 
-      xScale = d3.scaleTime().range([0, width]);
+      resizeTimer = setTimeout(function() {
+        width = parseInt(d3.select("." + styles.control).style("width"), 10);
+        width = width - margin.left - margin.right;
 
-      xScale.domain(
-        d3.extent(dataFlat, function(d) {
-          return d.Month;
-        })
-      );
+        xScale = d3.scaleTime().range([0, width]);
 
-      // Direct resizing
-      timeLine.attr("x2", width);
-      timeLineRightBoundary.attr("x1", width).attr("x2", width);
-      timeLineTextLeft.style("left", width * 0.1 + margin.left + "px");
-      timeLineTextRight.style("right", width * 0.1 + margin.right + "px");
+        xScale.domain(
+          d3.extent(dataFlat, function(d) {
+            return d.Month;
+          })
+        );
 
-      // Selection based resizing
+        // Direct resizing
+        timeLine.attr("x2", width);
+        timeLineRightBoundary.attr("x1", width).attr("x2", width);
+        timeLineTextLeft.style("left", width * 0.1 + margin.left + "px");
+        timeLineTextRight.style("right", width * 0.1 + margin.right + "px");
 
-      // Resize the labels
-      (labelMargin = width * (1 / 2)),
-        d3
-          .selectAll("." + styles.labels)
-          .style("width", labelMargin - 10 + "px");
+        // Selection based resizing
 
-      // Remove all loop-through items so we can replace later
-      d3.selectAll("." + styles.singlePlot).remove();
-      d3.selectAll("." + styles.annotation).remove();
+        // Resize the labels
+        (labelMargin = width * (1 / 2)),
+          d3
+            .selectAll("." + styles.labels)
+            .style("width", labelMargin - 10 + "px");
 
-      dataFlat.columns.forEach((volume, i) => {
-        if (volume !== "Gun control searches") return;
+        // Remove all loop-through items so we can replace later
+        d3.selectAll("." + styles.singlePlot).remove();
+        d3.selectAll("." + styles.annotation).remove();
 
-        area.y1(d => {
-          return yScale(d[volume]);
+        dataFlat.columns.forEach((volume, i) => {
+          if (volume !== "Gun control searches") return;
+
+          area.y1(d => {
+            return yScale(d[volume]);
+          });
+
+          let downPage = spacing * (i - 1);
+          // let downPageLine = spacing * (i - 1) + joyplotHeight;
+          let downPageText = spacing * (i - 1) + 95;
+
+          // Firefox and Opera render these lines 1px down so
+          // if (firefox || opera) downPageLine--;
+
+          svg
+            .append("path")
+            .classed(styles.singlePlot, true)
+            .datum(dataFlat)
+            .attr("fill", shootingColor)
+            .attr("transform", "translate(0, " + downPage + ")")
+            .attr("d", area);
         });
 
-        let downPage = spacing * (i - 1);
-        // let downPageLine = spacing * (i - 1) + joyplotHeight;
-        let downPageText = spacing * (i - 1) + 95;
-
-        // Firefox and Opera render these lines 1px down so
-        // if (firefox || opera) downPageLine--;
-
-        svg
-          .append("path")
-          .classed(styles.singlePlot, true)
-          .datum(dataFlat)
-          .attr("fill", shootingColor)
-          .attr("transform", "translate(0, " + downPage + ")")
-          .attr("d", area);
-      });
-
-      // Re-annotate on resize
-      dataFlat.forEach(annotate);
+        // Re-annotate on resize
+        dataFlat.forEach(annotate);
+      }, resizeTimeout);
     };
     window.addEventListener("resize", resizeControl);
+    setTimeout(resizeControl, resizeTimeout);
   } // end createChart
 
   componentWillUnmount() {

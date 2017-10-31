@@ -360,7 +360,7 @@ class Pulse extends Component {
     resizePulse = () => {
       clearTimeout(resizeTimer);
 
-        resizeTimer = setTimeout(function() {
+      resizeTimer = setTimeout(function() {
         width = parseInt(d3.select("." + styles.pulse).style("width"), 10);
         width = width - margin.left - margin.right;
 
@@ -397,7 +397,9 @@ class Pulse extends Component {
 
         // Selection based resizing
         labelMargin = width * splitPoint;
-        d3.selectAll("." + styles.labels).style("width", labelMargin - 10 + "px");
+        d3
+          .selectAll("." + styles.labels)
+          .style("width", labelMargin - 10 + "px");
 
         d3.selectAll("." + styles.singlePlot).remove();
 
